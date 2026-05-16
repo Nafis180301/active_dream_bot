@@ -1,0 +1,351 @@
+% ══════════════════════════════════════════════════════
+% PART 3: RAILWAY DEPLOYMENT (VERY DETAILED)
+% ══════════════════════════════════════════════════════
+
+\chapter{Phase 3 --- Deploy on Railway.app}
+
+\section{What is Railway?}
+
+\textbf{Railway.app} (\url{https://railway.app}) is a cloud platform that runs your code 24/7. Think of it as a computer in the cloud that never turns off.
+
+\begin{table}[H]
+\centering
+\caption{Railway at a Glance}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Feature} & \textbf{Details} \\
+\hline
+Website & \url{https://railway.app} \\
+\hline
+What it does & Runs your Python bot 24/7 in the cloud \\
+\hline
+How it works & Reads your code from GitHub and runs it \\
+\hline
+Free trial & \$5 free credit (enough for 2--3 weeks of testing) \\
+\hline
+After trial & \$5/month (Hobby plan) + usage (typically \$2--5/month) \\
+\hline
+Payment & Credit card required after trial \\
+\hline
+Difficulty & Very easy --- no Linux/server knowledge needed \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{infobox}
+\textbf{Railway vs VPS:} Railway is like hiring someone to manage your computer for you. You just give them the code, and they handle everything (installing Python, running the bot, restarting if it crashes). A VPS (Chapter 4) is like buying your own computer --- you manage everything yourself.
+\end{infobox}
+
+\section{Step 1: Create a Railway Account}
+
+\begin{stepbox}{Create Your Account}
+\begin{enumerate}[leftmargin=1.5cm]
+    \item Open your browser and go to \url{https://railway.app}
+    \item You will see a landing page with a big button
+    \item Click \textbf{``Login''} (top right) or \textbf{``Start a New Project''}
+    \item You will see login options:
+    \begin{itemize}
+        \item \textbf{Login with GitHub} $\leftarrow$ \textbf{Choose this one!}
+        \item Login with Email
+    \end{itemize}
+    \item Click \textbf{``Login with GitHub''}
+    \item A GitHub authorization page appears
+    \item Click \textbf{``Authorize Railway''}
+    \item You are now logged into Railway!
+\end{enumerate}
+\end{stepbox}
+
+\begin{tipbox}
+We use ``Login with GitHub'' because Railway needs access to your GitHub repository to read the bot code. This is the easiest way to connect them.
+\end{tipbox}
+
+\section{Step 2: Create a New Project}
+
+\begin{stepbox}{Start a New Project}
+\begin{enumerate}[leftmargin=1.5cm]
+    \item After logging in, you'll see the Railway dashboard
+    \item Click \textbf{``+ New Project''} (it's a prominent button)
+    \item A menu appears with options:
+    \begin{itemize}
+        \item Deploy from GitHub repo $\leftarrow$ \textbf{Choose this one!}
+        \item Deploy a Template
+        \item Provision a Database
+        \item Empty Project
+    \end{itemize}
+    \item Click \textbf{``Deploy from GitHub repo''}
+\end{enumerate}
+\end{stepbox}
+
+\section{Step 3: Connect Your GitHub Repository}
+
+\begin{stepbox}{Select Your Repository}
+\begin{enumerate}[leftmargin=1.5cm]
+    \item Railway shows a list of your GitHub repositories
+    \item If you see \texttt{active-dream-bot} in the list:
+    \begin{itemize}
+        \item Click on it to select it
+    \end{itemize}
+    \item If you do NOT see it (because it's private):
+    \begin{enumerate}
+        \item Click \textbf{``Configure GitHub App''} at the bottom
+        \item A GitHub page opens asking which repositories Railway can access
+        \item Under ``Repository access'', select:
+        \begin{itemize}
+            \item \textbf{``Only select repositories''} $\leftarrow$ Choose this for security
+        \end{itemize}
+        \item Click the dropdown and select \texttt{active-dream-bot}
+        \item Click \textbf{``Save''}
+        \item Go back to Railway and you should now see the repository
+        \item Click on \texttt{active-dream-bot}
+    \end{enumerate}
+\end{enumerate}
+\end{stepbox}
+
+\begin{warningbox}
+\textbf{If Railway tries to deploy immediately}, it will \textbf{fail} because we haven't added the environment variables yet. That's okay! We'll fix it in the next step.
+\end{warningbox}
+
+\section{Step 4: Add Environment Variables}
+
+This is the \textbf{most important step}. You need to add all the secret values from your \texttt{.env} file into Railway's settings.
+
+\begin{stepbox}{Adding Variables}
+\begin{enumerate}[leftmargin=1.5cm]
+    \item After selecting your repository, Railway creates a ``service'' for your bot
+    \item You should see your project dashboard with a box/card representing your service
+    \item \textbf{Click on the service card} (it might be called ``active-dream-bot'')
+    \item You'll see a panel on the right side with tabs
+    \item Click the \textbf{``Variables''} tab
+    \item You'll see an empty variables section
+    \item Now you need to add each variable \textbf{one by one}:
+\end{enumerate}
+\end{stepbox}
+
+For each variable, click \textbf{``+ New Variable''} (or the ``Add'' button) and enter the name and value:
+
+\begin{table}[H]
+\centering
+\caption{Variables to Add in Railway}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Variable Name} & \textbf{Value (use client's actual values)} \\
+\hline
+\texttt{BOT\_TOKEN} & \texttt{7123456789:AAFx8Kz3mN9bR2wQ...} (from BotFather) \\
+\hline
+\texttt{ADMIN\_IDS} & \texttt{987654321} (client's Telegram User ID) \\
+\hline
+\texttt{FIVESIM\_API\_KEY} & \texttt{eyJhbGciOiJSUzUxMi...} (from 5sim.net) \\
+\hline
+\texttt{OTP\_GROUP\_ID} & \texttt{-1001234567890} (from @RawDataBot) \\
+\hline
+\texttt{OTP\_GROUP\_LINK} & \texttt{https://t.me/ActiveDreamOTP} \\
+\hline
+\texttt{CHANNEL\_LINK} & \texttt{https://t.me/ActiveDreamChannel} \\
+\hline
+\texttt{BOT\_NAME} & \texttt{Active Dream} \\
+\hline
+\texttt{OTP\_CHECK\_INTERVAL} & \texttt{5} \\
+\hline
+\texttt{OTP\_MAX\_WAIT} & \texttt{300} \\
+\hline
+\texttt{PYTHONIOENCODING} & \texttt{utf-8} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{importantbox}
+\textbf{Add \texttt{PYTHONIOENCODING=utf-8} as a variable!} Without this, the bot may crash on Railway due to emoji encoding issues. This is a common issue that is easy to miss.
+\end{importantbox}
+
+\begin{tipbox}
+\textbf{Bulk Add Shortcut:} Some versions of Railway allow you to paste multiple variables at once in the format:
+\begin{lstlisting}[style=termstyle]
+BOT_TOKEN=7123456789:AAFx8Kz3mN9bR2wQ...
+ADMIN_IDS=987654321
+FIVESIM_API_KEY=eyJhbGci...
+OTP_GROUP_ID=-1001234567890
+\end{lstlisting}
+Try clicking ``RAW Editor'' if available --- you can paste all variables at once.
+\end{tipbox}
+
+\section{Step 5: Configure the Start Command}
+
+Railway needs to know \textbf{how to start your bot}. If you created the \texttt{Procfile} in Phase 2, Railway should detect it automatically. But let's make sure:
+
+\begin{stepbox}{Verify/Set Start Command}
+\begin{enumerate}[leftmargin=1.5cm]
+    \item Click on your service in Railway
+    \item Go to the \textbf{``Settings''} tab
+    \item Look for \textbf{``Start Command''} or \textbf{``Custom Start Command''}
+    \item If it's empty, type:
+    \begin{lstlisting}[style=termstyle]
+python bot.py
+    \end{lstlisting}
+    \item Make sure the \textbf{``Build Command''} or install command is:
+    \begin{lstlisting}[style=termstyle]
+pip install -r requirements.txt
+    \end{lstlisting}
+    (Railway usually detects this automatically for Python projects)
+\end{enumerate}
+\end{stepbox}
+
+\section{Step 6: Deploy}
+
+\begin{stepbox}{Trigger Deployment}
+\begin{enumerate}[leftmargin=1.5cm]
+    \item After adding all variables, Railway should \textbf{automatically redeploy}
+    \item If it doesn't, click \textbf{``Deploy''} or \textbf{``Redeploy''} button
+    \item Railway will now:
+    \begin{enumerate}
+        \item Read your code from GitHub
+        \item Install Python
+        \item Install dependencies from \texttt{requirements.txt}
+        \item Run \texttt{python bot.py}
+    \end{enumerate}
+    \item You can watch the progress in the \textbf{``Deployments''} tab
+    \item The deployment takes about \textbf{1--3 minutes}
+\end{enumerate}
+\end{stepbox}
+
+\section{Step 7: Check the Logs}
+
+After deployment, you need to verify the bot started successfully:
+
+\begin{stepbox}{Viewing Logs}
+\begin{enumerate}[leftmargin=1.5cm]
+    \item Click on your service in Railway
+    \item Go to the \textbf{``Deployments''} tab
+    \item Click on the \textbf{latest deployment} (should show a green dot if successful)
+    \item Click \textbf{``View Logs''} or the log icon
+    \item You should see output like:
+    \begin{lstlisting}[style=termstyle]
+[BOT] Active Dream is starting...
+INFO - Bot initialized. Database ready.
+INFO - Application started
+    \end{lstlisting}
+    \item If you see these messages, \textbf{the bot is live!}
+\end{enumerate}
+\end{stepbox}
+
+\subsection{Common Errors in Logs}
+
+\begin{table}[H]
+\centering
+\caption{Troubleshooting Railway Deployment Errors}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Error Message} & \textbf{Solution} \\
+\hline
+\texttt{BOT\_TOKEN is not set} & You forgot to add the \texttt{BOT\_TOKEN} variable. Go to Variables tab and add it. \\
+\hline
+\texttt{ADMIN\_IDS is not set} & Add the \texttt{ADMIN\_IDS} variable with the client's User ID. \\
+\hline
+\texttt{ModuleNotFoundError} & The \texttt{requirements.txt} file is missing or incorrect. Make sure it's in the root folder. \\
+\hline
+\texttt{UnicodeEncodeError} & Add \texttt{PYTHONIOENCODING=utf-8} as a variable. \\
+\hline
+\texttt{401 Unauthorized} & The \texttt{BOT\_TOKEN} is invalid. Double-check with the client. \\
+\hline
+\texttt{Build failed} & Check if \texttt{requirements.txt} exists and has correct package names. \\
+\hline
+\end{tabularx}
+\end{table}
+
+\section{Step 8: Test the Bot}
+
+\begin{stepbox}{Verification Steps}
+\begin{enumerate}[leftmargin=1.5cm]
+    \item Open Telegram on your phone
+    \item Search for the bot's username (e.g., \texttt{@ActiveDream\_OTP\_Bot})
+    \item Tap \textbf{Start} or send \texttt{/start}
+    \item You should see the \textbf{``Request Access''} button
+    \item Click it --- you should see ``Access Pending''
+    \item The \textbf{client} (admin) should receive a notification with Approve/Reject
+    \item After approval, send \texttt{/start} again --- full menu should appear
+    \item Try \textbf{Get Number} $\rightarrow$ select any service $\rightarrow$ select any country
+    \item A number should appear, and OTP should arrive within seconds (mock) or minutes (real)
+\end{enumerate}
+\end{stepbox}
+
+\begin{successbox}
+\textbf{If the bot responds on Telegram, congratulations! Your bot is deployed and running 24/7 on Railway!}
+
+The bot will continue running even when you close your browser or turn off your computer. Railway keeps it running in the cloud.
+\end{successbox}
+
+\section{Railway Dashboard Overview}
+
+After deployment, your Railway dashboard is your control panel:
+
+\begin{table}[H]
+\centering
+\caption{Railway Dashboard Tabs}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Tab} & \textbf{What It Shows} \\
+\hline
+\textbf{Deployments} & History of all deployments. Click any to see logs. \\
+\hline
+\textbf{Variables} & Your environment variables (.env values). Edit here. \\
+\hline
+\textbf{Settings} & Start command, region, build settings. \\
+\hline
+\textbf{Metrics} & CPU and memory usage graphs. \\
+\hline
+\textbf{Networking} & Not needed for Telegram bots (they don't need a URL). \\
+\hline
+\end{tabularx}
+\end{table}
+
+\section{How to Update the Bot Later}
+
+If you make changes to the code in the future:
+
+\begin{enumerate}[leftmargin=1.5cm]
+    \item Edit the files on your PC
+    \item Open terminal and run:
+    \begin{lstlisting}[style=termstyle]
+cd "D:\Dart Project\active_dream_bot"
+git add .
+git commit -m "Description of changes"
+git push
+    \end{lstlisting}
+    \item Railway will \textbf{automatically detect the new code} and redeploy
+    \item The bot restarts with the new code within 1--2 minutes
+\end{enumerate}
+
+\begin{tipbox}
+This is one of the biggest advantages of Railway: every time you push code to GitHub, Railway automatically updates the running bot. No need to SSH into a server or manually restart anything.
+\end{tipbox}
+
+\section{Railway Pricing After Free Trial}
+
+\begin{table}[H]
+\centering
+\caption{Railway Cost Breakdown}
+\begin{tabularx}{\textwidth}{|l|c|X|}
+\hline
+\textbf{Item} & \textbf{Cost} & \textbf{Notes} \\
+\hline
+Hobby Plan & \$5/month & Base subscription fee \\
+\hline
+Compute usage & \$1--3/month & Based on CPU/memory; a Telegram bot uses very little \\
+\hline
+\textbf{Total} & \textbf{\$6--8/month} & Approximately 700--950 BDT \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{warningbox}
+\textbf{Important Note About Railway and SQLite:} Railway's file system is \textbf{ephemeral} --- meaning if Railway redeploys your app, the database file (\texttt{active\_dream.db}) gets \textbf{deleted and recreated}. This means:
+\begin{itemize}
+    \item All user data, balances, and transaction history are lost on every redeploy
+    \item This is fine for testing and short-term use
+    \item For long-term production use, you should either:
+    \begin{enumerate}
+        \item Use a VPS instead (Chapter 4) --- database persists permanently
+        \item Add a Railway PostgreSQL database (more complex, but data persists)
+    \end{enumerate}
+\end{itemize}
+\textbf{Recommendation:} Use Railway for initial deployment and client demonstration. If the client uses the bot long-term with many users, migrate to a VPS (Chapter 4).
+\end{warningbox}

@@ -1,0 +1,283 @@
+% ══════════════════════════════════════════════
+% CHAPTER 5: DEPLOYMENT
+% ══════════════════════════════════════════════
+
+\chapter{Deployment --- How to Put the Bot Online}
+
+\section{Deployment Options}
+
+For the bot to work 24/7, it needs to run on a server that is always online. Here are your options:
+
+\begin{table}[H]
+\centering
+\caption{Deployment Platform Comparison}
+\begin{tabularx}{\textwidth}{|l|c|c|c|X|}
+\hline
+\textbf{Platform} & \textbf{Cost/Month} & \textbf{Difficulty} & \textbf{Recommended} & \textbf{Notes} \\
+\hline
+DigitalOcean VPS & \$4--\$6 & Medium & \ding{51} Yes & Best reliability; full control \\
+\hline
+Hetzner VPS & \$3--\$5 & Medium & \ding{51} Yes & Cheapest VPS; EU servers \\
+\hline
+Oracle Cloud Free & \$0 & Hard & \ding{51} Yes & Free forever tier; setup is complex \\
+\hline
+Railway.app & \$5+ & Easy & Okay & Simple deployment; can get expensive \\
+\hline
+Render.com & \$0--\$7 & Easy & Okay & Free tier sleeps after inactivity \\
+\hline
+Home PC & \$0 & Easy & \ding{55} No & Not reliable; shuts down with PC \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{infobox}
+\textbf{Our Recommendation:} Use a \textbf{DigitalOcean Droplet} (\$4/month) or \textbf{Hetzner Cloud} (\$3.29/month). These provide the best balance of reliability, performance, and cost.
+\end{infobox}
+
+% ──────────────────────────────────────────────
+\section{Option A: Deploy on a VPS (DigitalOcean / Hetzner)}
+
+This is the recommended deployment method.
+
+\subsection{Step 1: Create a VPS}
+
+\begin{enumerate}
+    \item Go to \href{https://www.digitalocean.com}{DigitalOcean} or \href{https://www.hetzner.com/cloud}{Hetzner Cloud}
+    \item Create an account
+    \item Create a new \textbf{Droplet} (DigitalOcean) or \textbf{Server} (Hetzner):
+    \begin{itemize}
+        \item \textbf{OS:} Ubuntu 22.04 LTS
+        \item \textbf{Plan:} Basic / Smallest (\$4--6/month, 1 CPU, 512MB--1GB RAM)
+        \item \textbf{Region:} Choose the closest to your users (Singapore for Bangladesh)
+        \item \textbf{Authentication:} SSH key or password
+    \end{itemize}
+    \item Note down the server's \textbf{IP address}
+\end{enumerate}
+
+\subsection{Step 2: Connect to the Server}
+
+\begin{lstlisting}[style=bashstyle, title=Connect via SSH]
+ssh root@YOUR_SERVER_IP
+\end{lstlisting}
+
+On Windows, use \textbf{PuTTY} or \textbf{Windows Terminal} with SSH.
+
+\subsection{Step 3: Install Python and Dependencies}
+
+\begin{lstlisting}[style=bashstyle, title=Server Setup Commands]
+# Update system packages
+sudo apt update && sudo apt upgrade -y
+
+# Install Python 3.11+ and pip
+sudo apt install python3 python3-pip python3-venv git -y
+
+# Verify installation
+python3 --version
+# Should show Python 3.11 or higher
+\end{lstlisting}
+
+\subsection{Step 4: Upload the Bot Code}
+
+\begin{lstlisting}[style=bashstyle, title=Upload Code to Server]
+# Option 1: Using SCP (from your local machine)
+scp -r active_dream_bot/ root@YOUR_SERVER_IP:/opt/
+
+# Option 2: Using Git (if code is in a repository)
+cd /opt
+git clone YOUR_REPO_URL active_dream_bot
+
+# Option 3: Using SFTP (FileZilla)
+# Connect to server and upload the folder to /opt/
+\end{lstlisting}
+
+\subsection{Step 5: Set Up Virtual Environment}
+
+\begin{lstlisting}[style=bashstyle, title=Virtual Environment Setup]
+cd /opt/active_dream_bot
+
+# Create virtual environment
+python3 -m venv venv
+
+# Activate it
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+\end{lstlisting}
+
+\subsection{Step 6: Create the .env File}
+
+\begin{lstlisting}[style=bashstyle, title=Create Configuration]
+# Copy the template
+cp .env.example .env
+
+# Edit with your values
+nano .env
+# Fill in all the values from Chapter 4
+# Press Ctrl+O to save, Ctrl+X to exit
+\end{lstlisting}
+
+\subsection{Step 7: Test Run}
+
+\begin{lstlisting}[style=bashstyle, title=Test the Bot]
+# Activate virtual environment (if not already)
+source venv/bin/activate
+
+# Run the bot
+python bot.py
+
+# You should see:
+# Active Dream is starting...
+# Database initialized successfully.
+\end{lstlisting}
+
+Test the bot by sending \texttt{/start} to it on Telegram. If it responds, the bot is working!
+
+Press \texttt{Ctrl+C} to stop the test run.
+
+\subsection{Step 8: Set Up as a System Service (Run 24/7)}
+
+To keep the bot running permanently, even after server restarts:
+
+\begin{lstlisting}[style=bashstyle, title=Create Systemd Service]
+sudo nano /etc/systemd/system/activedream.service
+\end{lstlisting}
+
+Paste the following content:
+
+\begin{lstlisting}[style=envstyle, title=activedream.service]
+[Unit]
+Description=Active Dream Telegram Bot
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/active_dream_bot
+ExecStart=/opt/active_dream_bot/venv/bin/python bot.py
+Restart=always
+RestartSec=10
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target
+\end{lstlisting}
+
+Then enable and start the service:
+
+\begin{lstlisting}[style=bashstyle, title=Enable and Start Service]
+# Reload systemd
+sudo systemctl daemon-reload
+
+# Enable auto-start on boot
+sudo systemctl enable activedream
+
+# Start the bot
+sudo systemctl start activedream
+
+# Check status
+sudo systemctl status activedream
+\end{lstlisting}
+
+\subsection{Useful Service Commands}
+
+\begin{table}[H]
+\centering
+\caption{Systemd Service Management Commands}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Command} & \textbf{What It Does} \\
+\hline
+\texttt{sudo systemctl start activedream} & Start the bot \\
+\hline
+\texttt{sudo systemctl stop activedream} & Stop the bot \\
+\hline
+\texttt{sudo systemctl restart activedream} & Restart the bot \\
+\hline
+\texttt{sudo systemctl status activedream} & Check if bot is running \\
+\hline
+\texttt{journalctl -u activedream -f} & View live logs \\
+\hline
+\texttt{journalctl -u activedream --since "1 hour ago"} & View recent logs \\
+\hline
+\end{tabularx}
+\end{table}
+
+% ──────────────────────────────────────────────
+\section{Option B: Deploy on Railway.app (Easiest)}
+
+If you want the simplest deployment with minimal server management:
+
+\begin{enumerate}
+    \item Push your code to a \textbf{GitHub repository}
+    \item Go to \href{https://railway.app}{railway.app} and sign in with GitHub
+    \item Click \textbf{``New Project''} $\rightarrow$ \textbf{``Deploy from GitHub Repo''}
+    \item Select your repository
+    \item Add environment variables (all the .env values) in Railway's settings
+    \item Railway will automatically:
+    \begin{itemize}
+        \item Detect Python
+        \item Install dependencies from \texttt{requirements.txt}
+        \item Run \texttt{bot.py}
+    \end{itemize}
+    \item The bot will be online!
+\end{enumerate}
+
+\begin{warningbox}
+Railway charges \$5/month after the free trial. However, it's the easiest deployment option for non-technical users.
+\end{warningbox}
+
+% ──────────────────────────────────────────────
+\section{Option C: Deploy on Oracle Cloud (Free Forever)}
+
+Oracle Cloud offers a \textbf{free-forever} VM tier:
+
+\begin{enumerate}
+    \item Go to \href{https://cloud.oracle.com}{cloud.oracle.com}
+    \item Create a free account (requires credit card for verification, but won't charge)
+    \item Create an \textbf{Always Free} compute instance:
+    \begin{itemize}
+        \item Shape: VM.Standard.A1.Flex (ARM, 1 CPU, 1GB RAM)
+        \item OS: Ubuntu 22.04
+    \end{itemize}
+    \item Follow the same VPS deployment steps from Option A
+\end{enumerate}
+
+\begin{tipbox}
+Oracle Cloud Free Tier is genuinely free and does not expire. It's the best option if you want to minimize costs. The setup is more complex, but once configured, it runs indefinitely at zero cost.
+\end{tipbox}
+
+% ──────────────────────────────────────────────
+\section{Post-Deployment Verification}
+
+After deployment, verify everything works:
+
+\begin{table}[H]
+\centering
+\caption{Post-Deployment Verification Checklist}
+\begin{tabularx}{\textwidth}{|c|X|c|}
+\hline
+\textbf{\#} & \textbf{Test} & \textbf{Pass?} \\
+\hline
+1 & Send \texttt{/start} to the bot --- should see ``Request Access'' button & $\square$ \\
+\hline
+2 & Click ``Request Access'' --- should see pending message & $\square$ \\
+\hline
+3 & Admin receives notification with Approve/Reject buttons & $\square$ \\
+\hline
+4 & Admin clicks Approve --- user receives congratulations & $\square$ \\
+\hline
+5 & Approved user sends \texttt{/start} --- sees main menu & $\square$ \\
+\hline
+6 & Click ``Get Number'' --- sees service selection & $\square$ \\
+\hline
+7 & Select Facebook $\rightarrow$ Select country --- number is assigned & $\square$ \\
+\hline
+8 & Use number on Facebook --- OTP appears in bot & $\square$ \\
+\hline
+9 & OTP is forwarded to OTP Group & $\square$ \\
+\hline
+10 & Admin sends \texttt{/admin} --- sees admin panel with statistics & $\square$ \\
+\hline
+\end{tabularx}
+\end{table}

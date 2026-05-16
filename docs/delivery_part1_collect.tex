@@ -1,0 +1,188 @@
+% ══════════════════════════════════════════════════════
+% PART 1: COLLECTING CLIENT INFORMATION
+% ══════════════════════════════════════════════════════
+
+\chapter{Phase 1 --- Collect Client Information}
+
+\section{Overview}
+
+Before you can deploy the bot, you need \textbf{4 pieces of information} from your client. Without these, the bot cannot function. This phase involves \textbf{zero coding} --- you are simply gathering credentials.
+
+\begin{infobox}
+\textbf{Who is the Admin?} The admin is determined by a single value in the \texttt{.env} file called \texttt{ADMIN\_IDS}. Whoever's Telegram User ID is in that field becomes the bot admin. The admin can:
+\begin{itemize}
+    \item Approve/reject user access requests
+    \item Add balance to users
+    \item Ban/unban users
+    \item Broadcast messages
+    \item View statistics
+\end{itemize}
+To make your \textbf{client} the admin, you put \textbf{their} User ID there --- not yours.
+\end{infobox}
+
+\section{What You Need From the Client}
+
+\begin{table}[H]
+\centering
+\caption{Required Information Checklist}
+\begin{tabularx}{\textwidth}{|c|l|X|c|}
+\hline
+\textbf{\#} & \textbf{Item} & \textbf{How Client Gets It} & \textbf{Got It?} \\
+\hline
+1 & Bot Token & Create bot via @BotFather on Telegram & $\square$ \\
+\hline
+2 & Client User ID & Send /start to @userinfobot & $\square$ \\
+\hline
+3 & 5sim.net API Key & Register on 5sim.net, go to Profile & $\square$ \\
+\hline
+4 & OTP Group Chat ID & Add @RawDataBot to the group & $\square$ \\
+\hline
+\end{tabularx}
+\end{table}
+
+\section{Step-by-Step: Getting Each Item}
+
+\subsection{Item 1: Bot Token (2 minutes)}
+
+The client must create the bot under \textbf{their own} Telegram account. This way, the bot belongs to them.
+
+\begin{stepbox}{Steps for the Client}
+\begin{enumerate}[leftmargin=1.5cm]
+    \item Open Telegram app (phone or desktop)
+    \item Search for \texttt{@BotFather} and tap \textbf{Start}
+    \item Send the message: \texttt{/newbot}
+    \item BotFather asks: ``What name for your bot?''
+    \begin{itemize}
+        \item Client types: \texttt{Active Dream} (or whatever name they want)
+    \end{itemize}
+    \item BotFather asks: ``Choose a username''
+    \begin{itemize}
+        \item Client types: \texttt{ActiveDream\_OTP\_Bot} (must end with \texttt{bot})
+        \item If taken, try: \texttt{ActiveDreamOTP\_Bot}, \texttt{AD\_Number\_Bot}, etc.
+    \end{itemize}
+    \item BotFather responds with a \textbf{Token} that looks like:
+    \begin{lstlisting}[style=termstyle]
+7123456789:AAFx8Kz3mN9bR2wQp1vL7dS5yH0jE4cW6uI
+    \end{lstlisting}
+    \item \textbf{Client copies this token and sends it to you}
+\end{enumerate}
+\end{stepbox}
+
+\begin{warningbox}
+The bot token is like a password. Tell the client: ``\textbf{This token controls the bot. Never share it publicly. Only send it to me privately.}''
+\end{warningbox}
+
+\subsection{Item 2: Client's Telegram User ID (30 seconds)}
+
+\begin{stepbox}{Steps for the Client}
+\begin{enumerate}[leftmargin=1.5cm]
+    \item Open Telegram
+    \item Search for \texttt{@userinfobot}
+    \item Tap \textbf{Start} or send \texttt{/start}
+    \item The bot replies with info including a number like:
+    \begin{lstlisting}[style=termstyle]
+Id: 987654321
+    \end{lstlisting}
+    \item \textbf{Client copies the number and sends it to you}
+\end{enumerate}
+\end{stepbox}
+
+\begin{tipbox}
+If you want \textbf{both you and the client} as admins, you'll use both IDs separated by a comma: \texttt{ADMIN\_IDS=987654321,1272625698}
+\end{tipbox}
+
+\subsection{Item 3: 5sim.net API Key (5 minutes)}
+
+This is the service that provides real virtual phone numbers.
+
+\begin{stepbox}{Steps for the Client}
+\begin{enumerate}[leftmargin=1.5cm]
+    \item Go to \url{https://5sim.net} in a web browser
+    \item Click \textbf{Sign Up} / \textbf{Register}
+    \item Register with email address
+    \item Verify email
+    \item After logging in, click on the \textbf{username/profile} icon (top right)
+    \item Scroll down to the \textbf{``API Key''} section
+    \item Click \textbf{``Generate API Key''}
+    \item A long text appears starting with \texttt{eyJ...}
+    \item \textbf{Client copies this and sends it to you}
+\end{enumerate}
+\end{stepbox}
+
+\begin{importantbox}
+The client \textbf{also needs to fund} their 5sim.net account with at least \textbf{\$10 USD} for the bot to buy real numbers. They can use Binance P2P (BDT to USDT) to fund it. See Chapter 3 of the main documentation for detailed funding instructions.
+
+\textbf{Without funding, the bot will still work but will use mock/fake numbers.} This is fine for initial testing and demonstration.
+\end{importantbox}
+
+\subsection{Item 4: OTP Group Chat ID (3 minutes)}
+
+When an OTP is received, the bot forwards it to a Telegram group for team visibility.
+
+\begin{stepbox}{Steps for the Client}
+\begin{enumerate}[leftmargin=1.5cm]
+    \item Create a new \textbf{Group} in Telegram
+    \item Name it: \textbf{Active Dream OTP} (or any name)
+    \item Add the bot they created (e.g., \texttt{@ActiveDream\_OTP\_Bot}) to the group
+    \item \textbf{Make the bot an admin} of the group (this is required so it can send messages)
+    \item Now add \texttt{@RawDataBot} to the group
+    \item RawDataBot will immediately post a message showing the group info
+    \item Look for the line that says \textbf{``Chat ID''} --- it looks like:
+    \begin{lstlisting}[style=termstyle]
+"id": -1001234567890
+    \end{lstlisting}
+    \item \textbf{Client copies this number} (including the minus sign!) \textbf{and sends it to you}
+    \item The client can now \textbf{remove @RawDataBot} from the group (it was only needed to get the ID)
+\end{enumerate}
+\end{stepbox}
+
+\section{Message Template to Send Your Client}
+
+Copy-paste this to your client on Telegram or WhatsApp:
+
+\begin{lstlisting}[style=envstyle, title={Message to Client (Bangla)}]
+Assalamu Alaikum ভাইয়া,
+
+বটটা পুরোপুরি রেডি আছে। Deploy করার আগে 
+আপনাকে ৪টা জিনিস করতে হবে:
+
+1) Telegram-এ @BotFather এ গিয়ে /newbot দিন
+   - নাম দিন: Active Dream
+   - Username দিন (bot দিয়ে শেষ হতে হবে)
+   - যে Token আসবে সেটা কপি করে দিন
+
+2) Telegram-এ @userinfobot এ /start দিন
+   - যে নম্বর আসবে সেটা কপি করে দিন
+
+3) https://5sim.net এ একাউন্ট করুন
+   - Profile > API Key > Generate
+   - সেই API Key কপি করে দিন
+   - (একাউন্টে $10 ঢুকাতে হবে - 
+     Binance P2P দিয়ে USDT পাঠাবেন)
+
+4) Telegram-এ একটা Group বানান 
+   "Active Dream OTP" নামে
+   - বটটা গ্রুপে যোগ করুন এবং Admin করুন
+   - গ্রুপে @RawDataBot যোগ করুন
+   - যে Chat ID আসবে (-100 দিয়ে শুরু) 
+     সেটা দিন
+   - তারপর RawDataBot বের করে দিন
+
+এই ৪টা জিনিস পেলেই ১ ঘণ্টার মধ্যে 
+বট লাইভ করে দিচ্ছি! ✅
+\end{lstlisting}
+
+\section{After You Receive the Information}
+
+Once the client sends you all 4 items, you should have a list like this:
+
+\begin{lstlisting}[style=envstyle, title={Your collected values (example)}]
+Bot Token:   7123456789:AAFx8Kz3mN9bR2wQp1vL7dS5yH0jE4cW6uI
+User ID:     987654321
+API Key:     eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9...
+Group ID:    -1001234567890
+\end{lstlisting}
+
+\begin{successbox}
+You have everything you need! Now proceed to \textbf{Phase 2: Upload to GitHub}, then \textbf{Phase 3: Deploy on Railway}.
+\end{successbox}

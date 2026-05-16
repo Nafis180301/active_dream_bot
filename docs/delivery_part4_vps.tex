@@ -1,0 +1,178 @@
+% ══════════════════════════════════════════════════════
+% PART 4: VPS DEPLOYMENT (ALTERNATIVE)
+% ══════════════════════════════════════════════════════
+
+\chapter{Phase 4 --- VPS Deployment (Alternative)}
+
+\begin{infobox}
+\textbf{When to use VPS instead of Railway:}
+\begin{itemize}
+    \item Long-term production use (database persists permanently)
+    \item Cheaper for 24/7 operation (\$3.29/month vs \$6--8/month)
+    \item Full control over the server
+    \item Client plans to use the bot with many users
+\end{itemize}
+\textbf{When to use Railway instead:}
+\begin{itemize}
+    \item Quick deployment for demonstration
+    \item No Linux knowledge
+    \item Automatic updates when code changes
+\end{itemize}
+\end{infobox}
+
+\section{Step 1: Buy a VPS Server}
+
+\subsection{Choose a Provider}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|l|c|c|X|}
+\hline
+\textbf{Provider} & \textbf{Cost/Month} & \textbf{Link} & \textbf{Notes} \\
+\hline
+Hetzner & \$3.29 & hetzner.com/cloud & Cheapest; recommended \\
+\hline
+DigitalOcean & \$4.00 & digitalocean.com & Popular; good docs \\
+\hline
+Oracle Cloud & \$0.00 & cloud.oracle.com & Free forever tier; complex setup \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Create the Server}
+
+\begin{enumerate}[leftmargin=1.5cm]
+    \item Go to your chosen provider's website
+    \item Create an account and add a payment method
+    \item Click \textbf{``Create Server''} or \textbf{``Create Droplet''}
+    \item Select these settings:
+    \begin{itemize}
+        \item \textbf{OS:} Ubuntu 22.04 LTS
+        \item \textbf{Location:} Singapore (closest to Bangladesh)
+        \item \textbf{Size:} Smallest/cheapest plan
+        \item \textbf{Authentication:} Password (easier for beginners)
+    \end{itemize}
+    \item Set a strong password and \textbf{write it down}
+    \item Click \textbf{Create} and note the \textbf{IP address}
+\end{enumerate}
+
+\section{Step 2: Connect to the Server}
+
+Open Windows Terminal or PowerShell:
+
+\begin{lstlisting}[style=termstyle]
+ssh root@YOUR_SERVER_IP
+\end{lstlisting}
+
+Type \texttt{yes} when asked about fingerprint, then enter your password.
+
+\section{Step 3: Set Up the Server}
+
+Run these commands one by one:
+
+\begin{lstlisting}[style=termstyle, title={Update and install Python}]
+sudo apt update && sudo apt upgrade -y
+sudo apt install python3 python3-pip python3-venv git unzip -y
+\end{lstlisting}
+
+\section{Step 4: Upload the Code}
+
+\textbf{From a new terminal on your PC} (keep the SSH one open):
+
+\begin{lstlisting}[style=termstyle]
+scp -r "D:\Dart Project\active_dream_bot" root@YOUR_SERVER_IP:/opt/
+\end{lstlisting}
+
+Enter the server password when asked.
+
+\section{Step 5: Configure on the Server}
+
+Back in your \textbf{SSH terminal} (the server):
+
+\begin{lstlisting}[style=termstyle, title={Set up Python environment}]
+cd /opt/active_dream_bot
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+\end{lstlisting}
+
+\begin{lstlisting}[style=termstyle, title={Remove test data and create production config}]
+rm -f .env active_dream.db
+nano .env
+\end{lstlisting}
+
+Paste the client's values (same format as the \texttt{.env.example} file). Save with \textbf{Ctrl+O}, exit with \textbf{Ctrl+X}.
+
+\section{Step 6: Test Run}
+
+\begin{lstlisting}[style=termstyle]
+source venv/bin/activate
+python3 bot.py
+\end{lstlisting}
+
+Test on Telegram. If it works, press \textbf{Ctrl+C} to stop.
+
+\section{Step 7: Set Up 24/7 Service}
+
+\begin{lstlisting}[style=termstyle, title={Create service file}]
+sudo nano /etc/systemd/system/activedream.service
+\end{lstlisting}
+
+Paste this exactly:
+
+\begin{lstlisting}[style=envstyle, title={activedream.service}]
+[Unit]
+Description=Active Dream Telegram Bot
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/active_dream_bot
+ExecStart=/opt/active_dream_bot/venv/bin/python3 bot.py
+Restart=always
+RestartSec=10
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONIOENCODING=utf-8
+
+[Install]
+WantedBy=multi-user.target
+\end{lstlisting}
+
+Save and exit, then:
+
+\begin{lstlisting}[style=termstyle, title={Start the service}]
+sudo systemctl daemon-reload
+sudo systemctl enable activedream
+sudo systemctl start activedream
+sudo systemctl status activedream
+\end{lstlisting}
+
+You should see \textbf{``active (running)''} in green.
+
+\section{Useful Commands Reference}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Command} & \textbf{What It Does} \\
+\hline
+\texttt{sudo systemctl status activedream} & Check if bot is running \\
+\hline
+\texttt{sudo systemctl restart activedream} & Restart the bot \\
+\hline
+\texttt{sudo systemctl stop activedream} & Stop the bot \\
+\hline
+\texttt{journalctl -u activedream -f} & View live logs \\
+\hline
+\texttt{journalctl -u activedream -n 50} & View last 50 log lines \\
+\hline
+\texttt{nano /opt/active\_dream\_bot/.env} & Edit configuration \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{successbox}
+The bot is now running 24/7 on your VPS. It will automatically restart if it crashes or if the server reboots. The database is stored permanently on the server, so no data is lost.
+\end{successbox}

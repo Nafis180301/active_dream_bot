@@ -1,0 +1,198 @@
+% ══════════════════════════════════════════════
+% CHAPTER 1: PROJECT OVERVIEW
+% ══════════════════════════════════════════════
+
+\chapter{Project Overview — What We Built}
+
+\section{Executive Summary}
+
+\textbf{Active Dream Bot} is a fully-functional, permission-based private Telegram bot that provides virtual phone numbers for OTP (One-Time Password) verification. The bot is designed specifically for teams and communities who need reliable, on-demand phone numbers to verify accounts on platforms like \textbf{Facebook}, Instagram, WhatsApp, and many others.
+
+Unlike public OTP bots such as \texttt{@SureSmsOfficial} or \texttt{@FREE\_FACEBOOK\_NUMBERS\_BOT}, Active Dream operates as a \textbf{closed, private system} where only admin-approved users can access the services. This ensures security, accountability, and controlled usage.
+
+\begin{successbox}
+The bot has been fully developed and all 18 Python source files compile without errors. The codebase is production-ready and awaiting only configuration (API keys, bot token) before deployment.
+\end{successbox}
+
+% ──────────────────────────────────────────────
+\section{What This Bot Does}
+
+The Active Dream Bot performs the following core functions:
+
+\subsection{1. Permission-Based Access Control}
+\begin{itemize}[leftmargin=2cm]
+    \item[\ding{51}] When a new user sends \texttt{/start}, they \textbf{cannot access} the bot directly
+    \item[\ding{51}] They see a \textbf{``Request Access''} button
+    \item[\ding{51}] Clicking it sends a notification to all admins with the user's details:
+    \begin{itemize}
+        \item Username
+        \item Full Name
+        \item Telegram User ID
+        \item Timestamp of request
+    \end{itemize}
+    \item[\ding{51}] Admin can \textbf{Approve} (\ding{51}) or \textbf{Reject} (\ding{55}) directly from the notification
+    \item[\ding{51}] Upon approval, the user receives a congratulatory message and gains full access
+\end{itemize}
+
+\subsection{2. Virtual Number Acquisition}
+\begin{itemize}[leftmargin=2cm]
+    \item[\ding{51}] Approved users click \textbf{``Get Number''} from the main menu
+    \item[\ding{51}] They select a \textbf{service} (Facebook, Instagram, WhatsApp, Google, TikTok, etc.)
+    \item[\ding{51}] They select a \textbf{country} (20+ countries available including Bangladesh, India, Ethiopia, USA, etc.)
+    \item[\ding{51}] The bot calls the \textbf{5sim.net API} to purchase a real virtual phone number
+    \item[\ding{51}] The number is displayed to the user immediately
+\end{itemize}
+
+\subsection{3. Automatic OTP Reception}
+\begin{itemize}[leftmargin=2cm]
+    \item[\ding{51}] After a number is assigned, the bot \textbf{automatically polls} the 5sim.net API every 5 seconds
+    \item[\ding{51}] When an OTP/SMS arrives, it is \textbf{instantly displayed} to the user
+    \item[\ding{51}] The OTP code is extracted and shown separately for easy copying
+    \item[\ding{51}] The full SMS text is also displayed
+    \item[\ding{51}] The OTP is \textbf{forwarded to the OTP group} for team visibility
+    \item[\ding{51}] If no OTP arrives within 5 minutes, the number is auto-cancelled and balance is refunded
+\end{itemize}
+
+\subsection{4. Balance \& Transaction System}
+\begin{itemize}[leftmargin=2cm]
+    \item[\ding{51}] Each user has a \textbf{credit balance} managed by admins
+    \item[\ding{51}] Number purchases are \textbf{deducted from balance}
+    \item[\ding{51}] Failed/expired numbers are \textbf{automatically refunded}
+    \item[\ding{51}] Full transaction history is maintained and viewable
+    \item[\ding{51}] Admins can add balance to any user via \texttt{/addbal} command
+\end{itemize}
+
+\subsection{5. Comprehensive Admin Panel}
+\begin{itemize}[leftmargin=2cm]
+    \item[\ding{51}] \texttt{/admin} command opens the admin dashboard
+    \item[\ding{51}] View real-time statistics (total users, approved, pending, banned)
+    \item[\ding{51}] View number statistics (total requested, completed, active, cancelled)
+    \item[\ding{51}] Approve/Reject pending access requests
+    \item[\ding{51}] Add balance to users: \texttt{/addbal USER\_ID AMOUNT}
+    \item[\ding{51}] Broadcast messages to all users: \texttt{/broadcast MESSAGE}
+    \item[\ding{51}] Ban users: \texttt{/ban USER\_ID}
+    \item[\ding{51}] Unban users: \texttt{/unban USER\_ID}
+\end{itemize}
+
+% ──────────────────────────────────────────────
+\section{Supported Services}
+
+The bot supports virtual numbers for the following platforms:
+
+\begin{table}[H]
+\centering
+\caption{Supported Services for OTP Verification}
+\begin{tabularx}{\textwidth}{|c|l|X|}
+\hline
+\textbf{Emoji} & \textbf{Service} & \textbf{Use Case} \\
+\hline
+\faFacebook & Facebook & Account creation, 2FA verification \\
+\faInstagram & Instagram & New account verification \\
+\faWhatsapp & WhatsApp & Phone number verification \\
+\faTelegram & Telegram & Account registration \\
+\faTwitter & Twitter/X & Account verification \\
+\faGoogle & Google & Gmail and Google account verification \\
+\faMusic & TikTok & Account creation \\
+\faSnapchat & Snapchat & Phone verification \\
+\faDiscord & Discord & Account verification \\
+\faMicrosoft & Microsoft & Outlook, Microsoft account verification \\
+\faYahoo & Yahoo & Email account verification \\
+\faAmazon & Amazon & Account verification \\
+\faMobile & Any/Other & Any service not listed above \\
+\hline
+\end{tabularx}
+\end{table}
+
+% ──────────────────────────────────────────────
+\section{Supported Countries}
+
+The bot offers virtual numbers from 20+ countries:
+
+\begin{table}[H]
+\centering
+\caption{Available Countries for Virtual Numbers}
+\begin{tabular}{|l||l|}
+\hline
+\textbf{Country} & \textbf{Country} \\
+\hline
+Russia & Kenya \\
+USA & Nigeria \\
+UK & Bangladesh \\
+India & Pakistan \\
+Indonesia & Brazil \\
+Philippines & Egypt \\
+Ethiopia & Vietnam \\
+Ukraine & Kazakhstan \\
+Myanmar & Colombia \\
+Mexico & Thailand \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{tipbox}
+The country list can be easily expanded by adding entries to the \texttt{COUNTRIES} dictionary in \texttt{utils/constants.py}. No other code changes are needed.
+\end{tipbox}
+
+% ──────────────────────────────────────────────
+\section{User Journey — Complete Flow}
+
+Here is the exact experience a user goes through:
+
+\subsection{Step 1: First Contact}
+\begin{enumerate}
+    \item User finds the bot on Telegram (via link or search)
+    \item User sends \texttt{/start}
+    \item Bot displays: ``\textit{This is a private bot. You need admin approval.}''
+    \item User sees a single button: \textbf{Request Access}
+\end{enumerate}
+
+\subsection{Step 2: Access Request}
+\begin{enumerate}
+    \item User clicks \textbf{Request Access}
+    \item Bot saves user info and sets status to ``pending''
+    \item Bot shows: ``\textit{Your request is pending. Please wait.}''
+    \item All admins receive a notification with:
+    \begin{itemize}
+        \item User's name, username, and Telegram ID
+        \item Two buttons: \textbf{Approve} and \textbf{Reject}
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Step 3: Admin Decision}
+\begin{enumerate}
+    \item Admin reviews the request
+    \item \textbf{If Approved:}
+    \begin{itemize}
+        \item User receives: ``\textit{Congratulations! Your access has been approved!}''
+        \item User can now send \texttt{/start} to see the main menu
+    \end{itemize}
+    \item \textbf{If Rejected:}
+    \begin{itemize}
+        \item User receives a rejection notification
+        \item User can request again later
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Step 4: Using the Bot}
+\begin{enumerate}
+    \item Approved user sends \texttt{/start}
+    \item Main menu appears with buttons:
+    \begin{itemize}
+        \item \textbf{Get Number} --- Request a virtual phone number
+        \item \textbf{Balance} --- View balance and transaction history
+        \item \textbf{Active Number} --- View currently active numbers
+        \item \textbf{Withdraw} --- Request a withdrawal
+        \item \textbf{Bot Update Channel} --- Link to the Telegram channel
+    \end{itemize}
+    \item User clicks \textbf{Get Number}
+    \item Selects a service (e.g., Facebook)
+    \item Selects a country (e.g., Ethiopia)
+    \item Bot purchases a number and displays it
+    \item User uses the number on the target platform
+    \item Bot automatically detects the incoming OTP
+    \item OTP is displayed to the user and forwarded to the OTP group
+\end{enumerate}
+
+\begin{importantbox}
+The entire flow from ``Get Number'' to ``OTP Received'' is \textbf{fully automated}. The user does not need to manually check for OTPs --- the bot does it automatically in the background.
+\end{importantbox}

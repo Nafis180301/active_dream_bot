@@ -1,0 +1,298 @@
+% ══════════════════════════════════════════════
+% CHAPTER 2: ARCHITECTURE & PROJECT STRUCTURE
+% ══════════════════════════════════════════════
+
+\chapter{Architecture \& Project Structure}
+
+\section{Technology Stack}
+
+The Active Dream Bot is built with a carefully selected, modern technology stack optimized for reliability, performance, and maintainability.
+
+\begin{table}[H]
+\centering
+\caption{Technology Stack}
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\textbf{Component} & \textbf{Technology} & \textbf{Why This Choice} \\
+\hline
+Language & Python 3.11+ & Industry standard for bot development; async support; huge ecosystem \\
+\hline
+Bot Framework & python-telegram-bot v21.6 & Official, well-maintained; fully async; 40K+ GitHub stars \\
+\hline
+Database & SQLite (via aiosqlite) & Zero configuration; serverless; file-based; perfect for single-bot deployments \\
+\hline
+SMS API & 5sim.net & Reliable; 200+ countries; fair pricing; great API documentation \\
+\hline
+HTTP Client & aiohttp 3.10 & High-performance async HTTP; used for 5sim API calls \\
+\hline
+Configuration & python-dotenv & Secure environment variable management via .env files \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{infobox}
+All libraries are open-source and free. The only paid service is the 5sim.net API for purchasing virtual numbers.
+\end{infobox}
+
+% ──────────────────────────────────────────────
+\section{Complete Project Structure}
+
+The project follows a clean, modular architecture. Every component has a single responsibility.
+
+\begin{lstlisting}[style=bashstyle, title=Project Directory Tree]
+active_dream_bot/
+|
+|-- bot.py                  # Main entry point - starts the bot
+|-- config.py               # Loads configuration from .env
+|-- .env                    # YOUR secrets (never share this!)
+|-- .env.example            # Template for .env
+|-- requirements.txt        # Python dependencies
+|-- README.md               # Quick-start guide
+|-- active_dream.db         # SQLite database (auto-created)
+|
+|-- database/
+|   |-- __init__.py
+|   |-- db.py               # Database connection & table creation
+|   |-- models.py           # All database query functions
+|
+|-- handlers/
+|   |-- __init__.py
+|   |-- start.py            # /start command & access request flow
+|   |-- menu.py             # Main menu & back navigation
+|   |-- numbers.py          # Get number, OTP polling, delete number
+|   |-- balance.py          # Balance display & withdrawal
+|   |-- admin.py            # Admin panel, approve/reject, broadcast
+|
+|-- services/
+|   |-- __init__.py
+|   |-- sms_provider.py     # Abstract interface for SMS APIs
+|   |-- fivesim.py          # 5sim.net API implementation
+|
+|-- utils/
+|   |-- __init__.py
+|   |-- constants.py        # Messages, service/country definitions
+|   |-- keyboards.py        # All inline keyboard layouts
+|   |-- decorators.py       # Permission check decorators
+|
+|-- docs/                   # This documentation
+\end{lstlisting}
+
+% ──────────────────────────────────────────────
+\section{File-by-File Explanation}
+
+\subsection{\texttt{bot.py} --- Main Entry Point (105 lines)}
+
+This is the file you run to start the bot. It:
+\begin{itemize}
+    \item Validates configuration (checks if all required .env values are set)
+    \item Initializes the database (creates tables if they don't exist)
+    \item Registers all command handlers (\texttt{/start}, \texttt{/admin}, \texttt{/addbal}, etc.)
+    \item Registers all callback query handlers (button presses)
+    \item Starts the Telegram polling loop
+    \item Notifies admins when the bot goes online
+    \item Cleanly shuts down the database on exit
+\end{itemize}
+
+\subsection{\texttt{config.py} --- Configuration Loader (42 lines)}
+
+Reads all settings from the \texttt{.env} file using \texttt{python-dotenv}. Includes a \texttt{validate()} method that checks for missing required values before the bot starts. This prevents runtime errors from missing API keys.
+
+\subsection{\texttt{database/db.py} --- Database Engine (72 lines)}
+
+Manages the SQLite database connection using \texttt{aiosqlite} (async SQLite). Creates all tables on first run:
+\begin{itemize}
+    \item \textbf{users} --- Stores all user records with approval status
+    \item \textbf{numbers} --- Stores all number purchase records
+    \item \textbf{transactions} --- Stores all balance changes (deposits, purchases, refunds)
+    \item \textbf{settings} --- Key-value store for bot configuration
+\end{itemize}
+
+Uses WAL (Write-Ahead Logging) journal mode for better concurrent read performance.
+
+\subsection{\texttt{database/models.py} --- Database Queries (210 lines)}
+
+Contains all database operations organized into three sections:
+\begin{enumerate}
+    \item \textbf{User Operations:} Create user, get user, update status, get all users, count users
+    \item \textbf{Balance Operations:} Get balance, add balance, deduct balance, get transactions
+    \item \textbf{Number Operations:} Create number record, update status, get active numbers, get history
+\end{enumerate}
+
+\subsection{\texttt{handlers/start.py} --- Access Control (130 lines)}
+
+Implements the complete permission flow:
+\begin{itemize}
+    \item \texttt{start\_command()} --- Checks user status and shows appropriate screen
+    \item \texttt{request\_access\_callback()} --- Handles the ``Request Access'' button
+    \item \texttt{check\_status\_callback()} --- Lets pending users check their status
+\end{itemize}
+
+\subsection{\texttt{handlers/numbers.py} --- Number \& OTP Flow (340 lines)}
+
+The largest and most complex handler. Manages:
+\begin{itemize}
+    \item Service selection (Facebook, Instagram, etc.)
+    \item Country selection (20+ countries)
+    \item Number purchase via 5sim.net API
+    \item \textbf{Background OTP polling} --- Uses \texttt{asyncio.create\_task()} to poll every 5 seconds
+    \item OTP display and group forwarding
+    \item Number deletion and balance refunds
+    \item Timeout handling (auto-cancel after 5 minutes)
+\end{itemize}
+
+\subsection{\texttt{handlers/admin.py} --- Admin Panel (260 lines)}
+
+Full admin management system:
+\begin{itemize}
+    \item Dashboard with live statistics
+    \item Pending request list
+    \item User approval/rejection
+    \item Balance management
+    \item Broadcasting to all users
+    \item Ban/Unban functionality
+\end{itemize}
+
+\subsection{\texttt{services/sms\_provider.py} --- Abstract Interface (50 lines)}
+
+Defines the contract that any SMS API provider must implement. This makes the bot \textbf{provider-agnostic} --- you can switch from 5sim.net to sms-activate.org or any other service by implementing this interface.
+
+Methods required:
+\begin{itemize}
+    \item \texttt{get\_balance()} --- Check API account balance
+    \item \texttt{buy\_number(country, service)} --- Purchase a virtual number
+    \item \texttt{check\_sms(order\_id)} --- Check if OTP has arrived
+    \item \texttt{cancel\_number(order\_id)} --- Cancel/release a number
+    \item \texttt{finish\_number(order\_id)} --- Mark order as complete
+    \item \texttt{get\_prices(country, service)} --- Get pricing info
+\end{itemize}
+
+\subsection{\texttt{services/fivesim.py} --- 5sim.net Implementation (170 lines)}
+
+Implements the \texttt{SmsProvider} interface for 5sim.net. Handles:
+\begin{itemize}
+    \item JWT authentication with the 5sim API
+    \item Number purchasing with automatic operator selection
+    \item SMS polling with status parsing (PENDING, RECEIVED, CANCELED, TIMEOUT)
+    \item OTP code extraction from SMS messages
+    \item Error handling for all API calls
+\end{itemize}
+
+\subsection{\texttt{utils/keyboards.py} --- Keyboard Layouts (170 lines)}
+
+All Telegram inline keyboard definitions in one place:
+\begin{itemize}
+    \item Request access keyboard
+    \item Main menu keyboard (4 buttons + channel link)
+    \item Service selection keyboard (13 services, 2 per row)
+    \item Country selection keyboard (20 countries, 2 per row)
+    \item Number active/completed keyboards
+    \item Admin panel keyboard
+    \item Admin user action keyboard
+\end{itemize}
+
+\subsection{\texttt{utils/decorators.py} --- Permission Decorators (40 lines)}
+
+Two Python decorators that wrap handler functions:
+\begin{itemize}
+    \item \texttt{@require\_approved} --- Only allows approved users to access the handler
+    \item \texttt{@require\_admin} --- Only allows admin users (defined in .env)
+\end{itemize}
+
+These are applied to every handler that needs protection, ensuring no unauthorized access.
+
+% ──────────────────────────────────────────────
+\section{Database Schema}
+
+\subsection{Users Table}
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|l|l|l|X|}
+\hline
+\textbf{Column} & \textbf{Type} & \textbf{Default} & \textbf{Description} \\
+\hline
+user\_id & INTEGER (PK) & --- & Telegram user ID \\
+username & TEXT & NULL & Telegram @username \\
+first\_name & TEXT & NULL & User's first name \\
+last\_name & TEXT & NULL & User's last name \\
+status & TEXT & `new' & new / pending / approved / rejected / banned \\
+balance & REAL & 0.0 & User's credit balance in USD \\
+created\_at & TIMESTAMP & now & First interaction time \\
+approved\_at & TIMESTAMP & NULL & When admin approved \\
+approved\_by & INTEGER & NULL & Admin's user ID \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Numbers Table}
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|l|l|l|X|}
+\hline
+\textbf{Column} & \textbf{Type} & \textbf{Default} & \textbf{Description} \\
+\hline
+id & INTEGER (PK) & auto & Auto-increment ID \\
+user\_id & INTEGER (FK) & --- & Who requested this number \\
+phone\_number & TEXT & --- & The virtual phone number \\
+country & TEXT & --- & Country name \\
+country\_code & TEXT & --- & Flag emoji \\
+service & TEXT & --- & Service name (Facebook, etc.) \\
+order\_id & TEXT & --- & 5sim order ID \\
+status & TEXT & `active' & active / waiting / completed / cancelled / expired \\
+sms\_code & TEXT & NULL & Extracted OTP code \\
+sms\_full & TEXT & NULL & Full SMS text \\
+cost & REAL & 0.0 & Cost of this number \\
+created\_at & TIMESTAMP & now & When number was assigned \\
+completed\_at & TIMESTAMP & NULL & When OTP was received/cancelled \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection{Transactions Table}
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|l|l|l|X|}
+\hline
+\textbf{Column} & \textbf{Type} & \textbf{Default} & \textbf{Description} \\
+\hline
+id & INTEGER (PK) & auto & Auto-increment ID \\
+user\_id & INTEGER (FK) & --- & User ID \\
+amount & REAL & --- & Amount (positive = credit, negative = debit) \\
+type & TEXT & --- & deposit / purchase / refund / admin\_add / withdrawal \\
+description & TEXT & --- & Human-readable description \\
+created\_at & TIMESTAMP & now & Transaction time \\
+\hline
+\end{tabularx}
+\end{table}
+
+% ──────────────────────────────────────────────
+\section{System Architecture Diagram}
+
+\begin{center}
+\begin{tikzpicture}[
+    node distance=1.5cm,
+    box/.style={rectangle, draw=primaryblue, fill=primaryblue!10, rounded corners, minimum width=3cm, minimum height=1cm, text centered, font=\small\bfseries},
+    db/.style={cylinder, draw=successgreen, fill=successgreen!10, shape border rotate=90, aspect=0.3, minimum width=2cm, minimum height=1.2cm, text centered, font=\small\bfseries},
+    api/.style={rectangle, draw=warningyellow, fill=warningyellow!10, rounded corners, minimum width=3cm, minimum height=1cm, text centered, font=\small\bfseries},
+    arrow/.style={->, thick, >=stealth}
+]
+    % Nodes
+    \node[box] (user) {Telegram User};
+    \node[box, right of=user, xshift=3cm] (bot) {Active Dream Bot};
+    \node[db, below of=bot, yshift=-1cm] (db) {SQLite DB};
+    \node[api, right of=bot, xshift=3cm] (fivesim) {5sim.net API};
+    \node[box, below of=user, yshift=-1cm] (admin) {Admin User};
+    \node[box, below of=fivesim, yshift=-1cm] (group) {OTP Group};
+    
+    % Arrows
+    \draw[arrow] (user) -- node[above, font=\tiny] {/start, buttons} (bot);
+    \draw[arrow] (bot) -- node[right, font=\tiny] {read/write} (db);
+    \draw[arrow] (bot) -- node[above, font=\tiny] {buy, check SMS} (fivesim);
+    \draw[arrow] (admin) -- node[above, font=\tiny] {approve/reject} (bot);
+    \draw[arrow] (bot) -- node[above, font=\tiny] {forward OTP} (group);
+    \draw[arrow, dashed] (fivesim) -- node[right, font=\tiny] {number + OTP} (bot);
+\end{tikzpicture}
+\end{center}
+
+\begin{infobox}
+The architecture is intentionally simple --- a single Python process handles everything. For high-traffic scenarios (100+ concurrent users), consider upgrading to PostgreSQL and deploying with webhook mode instead of polling.
+\end{infobox}

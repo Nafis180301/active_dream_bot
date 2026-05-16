@@ -1,0 +1,166 @@
+% ══════════════════════════════════════════════════════
+% ACTIVE DREAM BOT — DELIVERY GUIDE (MASTER FILE)
+% ══════════════════════════════════════════════════════
+\documentclass[a4paper,12pt]{report}
+
+% ── Core Packages ───────────────────────────────────
+\usepackage[margin=2cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{pifont}
+\usepackage{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+
+\tcbuselibrary{skins, breakable}
+
+% ── Colors ──────────────────────────────────────────
+\definecolor{brandDark}{HTML}{0D1117}
+\definecolor{brandPurple}{HTML}{6C63FF}
+\definecolor{brandLight}{HTML}{E8E6FF}
+\definecolor{railwayPurple}{HTML}{9747FF}
+\definecolor{githubDark}{HTML}{24292E}
+\definecolor{successGreen}{HTML}{27AE60}
+\definecolor{warningOrange}{HTML}{E67E22}
+\definecolor{dangerRed}{HTML}{E74C3C}
+\definecolor{infoBlue}{HTML}{3498DB}
+\definecolor{codeBackground}{HTML}{1E1E2E}
+\definecolor{codeForeground}{HTML}{CDD6F4}
+\definecolor{codeGreen}{HTML}{A6E3A1}
+\definecolor{codeComment}{HTML}{6C7086}
+
+% ── Hyperlinks ──────────────────────────────────────
+\hypersetup{
+    colorlinks=true,
+    linkcolor=brandPurple,
+    urlcolor=brandPurple,
+    citecolor=brandPurple,
+}
+
+% ── Code Listings ───────────────────────────────────
+\lstdefinestyle{termstyle}{
+    backgroundcolor=\color{codeBackground},
+    basicstyle=\small\ttfamily\color{codeForeground},
+    commentstyle=\color{codeComment},
+    stringstyle=\color{codeGreen},
+    breaklines=true,
+    frame=single,
+    rulecolor=\color{codeBackground},
+    xleftmargin=8pt,
+    xrightmargin=8pt,
+    aboveskip=10pt,
+    belowskip=10pt,
+    showstringspaces=false,
+}
+
+\lstdefinestyle{envstyle}{
+    backgroundcolor=\color{brandLight},
+    basicstyle=\small\ttfamily\color{brandDark},
+    breaklines=true,
+    frame=single,
+    rulecolor=\color{brandPurple},
+    xleftmargin=8pt,
+    xrightmargin=8pt,
+    aboveskip=10pt,
+    belowskip=10pt,
+}
+
+% ── Custom Boxes ────────────────────────────────────
+\newtcolorbox{stepbox}[1]{
+    colback=brandLight, colframe=brandPurple,
+    fonttitle=\bfseries\large, title={#1},
+    arc=4pt, boxrule=1.5pt, breakable
+}
+\newtcolorbox{warningbox}{
+    colback=warningOrange!10, colframe=warningOrange,
+    fonttitle=\bfseries, title={\faExclamationTriangle\ Warning},
+    arc=4pt, boxrule=1pt, breakable
+}
+\newtcolorbox{importantbox}{
+    colback=dangerRed!8, colframe=dangerRed,
+    fonttitle=\bfseries, title={\faExclamationCircle\ Important},
+    arc=4pt, boxrule=1pt, breakable
+}
+\newtcolorbox{successbox}{
+    colback=successGreen!10, colframe=successGreen,
+    fonttitle=\bfseries, title={\faCheckCircle\ Success},
+    arc=4pt, boxrule=1pt, breakable
+}
+\newtcolorbox{infobox}{
+    colback=infoBlue!8, colframe=infoBlue,
+    fonttitle=\bfseries, title={\faInfoCircle\ Info},
+    arc=4pt, boxrule=1pt, breakable
+}
+\newtcolorbox{tipbox}{
+    colback=successGreen!8, colframe=successGreen!80!black,
+    fonttitle=\bfseries, title={\faLightbulb\ Tip},
+    arc=4pt, boxrule=1pt, breakable
+}
+
+% ── Chapter Styling ─────────────────────────────────
+\titleformat{\chapter}[display]
+    {\normalfont\Huge\bfseries\color{brandDark}}
+    {\colorbox{brandPurple}{\parbox{1.2cm}{\centering\color{white}\thechapter}}}
+    {12pt}
+    {}
+\titlespacing*{\chapter}{0pt}{-20pt}{20pt}
+
+% ── Headers ─────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{brandPurple}\textbf{Active Dream Bot}}
+\fancyhead[R]{\small\color{gray}Delivery Guide}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.5pt}
+
+% ═══════════════════════════════════════════════════
+\begin{document}
+
+% ── Title Page ──────────────────────────────────────
+\begin{titlepage}
+\begin{tikzpicture}[remember picture, overlay]
+    \fill[brandDark] (current page.north west) rectangle (current page.south east);
+    \fill[brandPurple] ([yshift=-8cm]current page.north west) rectangle ([yshift=-12cm]current page.north east);
+\end{tikzpicture}
+
+\vspace*{4cm}
+\begin{center}
+    {\color{brandLight}\fontsize{16}{20}\selectfont COMPLETE STEP-BY-STEP}\\[8pt]
+    {\color{white}\fontsize{42}{50}\selectfont\bfseries DELIVERY}\\[4pt]
+    {\color{white}\fontsize{42}{50}\selectfont\bfseries GUIDE}\\[20pt]
+    {\color{brandLight}\fontsize{14}{18}\selectfont Active Dream Telegram OTP Bot}\\[6pt]
+    {\color{brandLight}\fontsize{12}{16}\selectfont Railway.app + VPS Deployment}
+\end{center}
+
+\vspace{4cm}
+
+\begin{center}
+    {\color{gray}\large Prepared by}\\[6pt]
+    {\color{brandPurple}\Large\bfseries NHM Development}\\[4pt]
+    {\color{gray}\normalsize Nafis Hossain Momen}\\[16pt]
+    {\color{gray}\normalsize May 16, 2026}
+\end{center}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% ── Include chapters ────────────────────────────────
+\input{delivery_part1_collect}
+\input{delivery_part2_github}
+\input{delivery_part3_railway}
+\input{delivery_part4_vps}
+\input{delivery_part5_verify}
+
+\end{document}

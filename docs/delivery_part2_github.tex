@@ -1,0 +1,196 @@
+% ══════════════════════════════════════════════════════
+% PART 2: UPLOADING CODE TO GITHUB
+% ══════════════════════════════════════════════════════
+
+\chapter{Phase 2 --- Upload Code to GitHub}
+
+\section{Why GitHub?}
+
+Railway.app deploys your bot directly from a \textbf{GitHub repository}. Think of GitHub as a cloud storage for code --- you upload your bot's files there, and Railway reads them from there to run the bot.
+
+\begin{infobox}
+\textbf{What is GitHub?}\\
+GitHub is a website (\url{https://github.com}) where developers store their code. It's like Google Drive, but specifically designed for code. It keeps track of every change you make, and services like Railway can read your code from there and run it automatically.
+\end{infobox}
+
+\section{Step 1: Create a GitHub Account (if you don't have one)}
+
+\begin{enumerate}[leftmargin=1.5cm]
+    \item Go to \url{https://github.com}
+    \item Click \textbf{``Sign up''} (top right corner)
+    \item Enter your email address
+    \item Create a password
+    \item Choose a username (e.g., \texttt{nafis-nhm})
+    \item Complete the verification puzzle
+    \item Verify your email (check inbox)
+    \item You now have a GitHub account!
+\end{enumerate}
+
+\section{Step 2: Install Git on Your PC}
+
+Git is a tool that uploads code to GitHub. You need to install it on your Windows PC.
+
+\begin{stepbox}{Install Git}
+\begin{enumerate}[leftmargin=1.5cm]
+    \item Go to \url{https://git-scm.com/download/win}
+    \item The download should start automatically (64-bit version)
+    \item Run the installer
+    \item \textbf{Click ``Next'' on every screen} --- the default settings are fine
+    \item Click \textbf{``Install''}
+    \item Click \textbf{``Finish''}
+\end{enumerate}
+\end{stepbox}
+
+\subsection{Verify Git is Installed}
+
+Open \textbf{Windows Terminal} (or PowerShell) and type:
+
+\begin{lstlisting}[style=termstyle]
+git --version
+\end{lstlisting}
+
+You should see something like: \texttt{git version 2.44.0.windows.1}
+
+If you see an error, \textbf{close and reopen} your terminal, then try again.
+
+\section{Step 3: Prepare the Project for Upload}
+
+Before uploading, we need to make sure \textbf{secret files are not uploaded}.
+
+\subsection{Step 3.1: Create a .gitignore file}
+
+This file tells Git which files to \textbf{NOT upload}. Open your terminal and run:
+
+\begin{lstlisting}[style=termstyle]
+cd "D:\Dart Project\active_dream_bot"
+\end{lstlisting}
+
+Then create the \texttt{.gitignore} file. It should contain:
+
+\begin{lstlisting}[style=envstyle, title={.gitignore --- Files to NOT upload}]
+# Secret configuration
+.env
+
+# Database (contains user data)
+*.db
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environment
+venv/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Compiled docs
+docs/*.pdf
+docs/*.aux
+docs/*.log
+docs/*.toc
+docs/*.out
+\end{lstlisting}
+
+\begin{importantbox}
+The most important line is \texttt{.env} --- this prevents your secret API keys and bot token from being uploaded to the internet. \textbf{NEVER upload your .env file to GitHub.}
+\end{importantbox}
+
+\section{Step 4: Create a Procfile for Railway}
+
+Railway needs a small file called \texttt{Procfile} that tells it \textbf{how to start your bot}. Create this file in the project root:
+
+\begin{lstlisting}[style=envstyle, title={Procfile (no file extension!)}]
+worker: python bot.py
+\end{lstlisting}
+
+\begin{warningbox}
+The file is called exactly \texttt{Procfile} --- capital P, no extension. Not \texttt{procfile.txt}, not \texttt{Procfile.txt}. Just \texttt{Procfile}.
+\end{warningbox}
+
+\section{Step 5: Create the GitHub Repository}
+
+\begin{stepbox}{Create a Private Repository on GitHub}
+\begin{enumerate}[leftmargin=1.5cm]
+    \item Go to \url{https://github.com} and log in
+    \item Click the \textbf{``+''} icon in the top right corner
+    \item Click \textbf{``New repository''}
+    \item Fill in the form:
+    \begin{itemize}
+        \item \textbf{Repository name:} \texttt{active-dream-bot}
+        \item \textbf{Description:} \texttt{Private Telegram OTP Bot}
+        \item \textbf{Visibility:} Select \textbf{``Private''} (very important!)
+        \item Do NOT check ``Add a README file'' (we already have one)
+        \item Do NOT add .gitignore (we already created one)
+    \end{itemize}
+    \item Click \textbf{``Create repository''}
+    \item GitHub will show a page with instructions --- keep this page open!
+\end{enumerate}
+\end{stepbox}
+
+\begin{importantbox}
+Make sure to select \textbf{``Private''} --- you do NOT want your bot code visible to the public internet. A private repository is only visible to you.
+\end{importantbox}
+
+\section{Step 6: Upload Your Code}
+
+Open \textbf{Windows Terminal} or \textbf{PowerShell} and run these commands \textbf{one by one}:
+
+\begin{lstlisting}[style=termstyle, title={Step 6.1: Go to your project folder}]
+cd "D:\Dart Project\active_dream_bot"
+\end{lstlisting}
+
+\begin{lstlisting}[style=termstyle, title={Step 6.2: Initialize Git}]
+git init
+\end{lstlisting}
+
+\begin{lstlisting}[style=termstyle, title={Step 6.3: Configure your Git identity}]
+git config user.name "Nafis Hossain Momen"
+git config user.email "your-email@example.com"
+\end{lstlisting}
+
+\begin{lstlisting}[style=termstyle, title={Step 6.4: Add all files (except those in .gitignore)}]
+git add .
+\end{lstlisting}
+
+\begin{lstlisting}[style=termstyle, title={Step 6.5: Create the first commit}]
+git commit -m "Initial commit: Active Dream Bot v1.0"
+\end{lstlisting}
+
+\begin{lstlisting}[style=termstyle, title={Step 6.6: Connect to your GitHub repository}]
+git branch -M main
+git remote add origin https://github.com/YOUR_GITHUB_USERNAME/active-dream-bot.git
+\end{lstlisting}
+
+Replace \texttt{YOUR\_GITHUB\_USERNAME} with your actual GitHub username!
+
+\begin{lstlisting}[style=termstyle, title={Step 6.7: Upload (push) the code}]
+git push -u origin main
+\end{lstlisting}
+
+\subsection{If It Asks for Login}
+
+When you run \texttt{git push}, it may ask you to log in to GitHub:
+\begin{itemize}
+    \item A browser window may open --- click \textbf{``Authorize Git''} and follow the steps
+    \item OR it asks for username/password in the terminal:
+    \begin{itemize}
+        \item Username: your GitHub username
+        \item Password: you need a \textbf{Personal Access Token} (not your actual password)
+        \item To create one: GitHub $\rightarrow$ Settings $\rightarrow$ Developer settings $\rightarrow$ Personal access tokens $\rightarrow$ Generate new token (classic) $\rightarrow$ check ``repo'' $\rightarrow$ Generate
+    \end{itemize}
+\end{itemize}
+
+\subsection{Verify Upload}
+
+Go to \url{https://github.com/YOUR_USERNAME/active-dream-bot} in your browser. You should see all your bot files listed there.
+
+\begin{successbox}
+Your code is now on GitHub! You should see files like \texttt{bot.py}, \texttt{config.py}, \texttt{requirements.txt}, etc. The \texttt{.env} file should \textbf{NOT} be there (that's correct --- it's secret). Now proceed to Phase 3: Deploy on Railway.
+\end{successbox}

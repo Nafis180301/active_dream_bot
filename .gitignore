@@ -1,0 +1,28 @@
+# Secret configuration
+.env
+
+# Database
+*.db
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environment
+venv/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Compiled docs
+docs/*.pdf
+docs/*.aux
+docs/*.log
+docs/*.toc
+docs/*.out

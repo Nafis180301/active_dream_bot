@@ -1,0 +1,169 @@
+% ══════════════════════════════════════════════════════
+% PART 5: VERIFICATION & FINAL HANDOFF
+% ══════════════════════════════════════════════════════
+
+\chapter{Phase 5 --- Verification \& Client Handoff}
+
+\section{Post-Deployment Testing Checklist}
+
+After the bot is deployed (on either Railway or VPS), run through this complete verification:
+
+\begin{table}[H]
+\centering
+\caption{Complete Verification Checklist}
+\begin{tabularx}{\textwidth}{|c|c|X|c|}
+\hline
+\textbf{\#} & \textbf{Phase} & \textbf{Test} & \textbf{Pass?} \\
+\hline
+\multicolumn{4}{|l|}{\cellcolor{brandLight}\textbf{Access Control Flow}} \\
+\hline
+1 & Start & Send \texttt{/start} --- see ``Request Access'' button & $\square$ \\
+\hline
+2 & Request & Click ``Request Access'' --- see pending message & $\square$ \\
+\hline
+3 & Admin & Admin gets notification with Approve/Reject & $\square$ \\
+\hline
+4 & Approve & Click Approve --- user gets congratulations & $\square$ \\
+\hline
+5 & Menu & Send \texttt{/start} again --- full menu appears & $\square$ \\
+\hline
+\multicolumn{4}{|l|}{\cellcolor{brandLight}\textbf{Number \& OTP Flow}} \\
+\hline
+6 & Service & Click ``Get Number'' --- see service list & $\square$ \\
+\hline
+7 & Country & Select Facebook --- see country list & $\square$ \\
+\hline
+8 & Number & Select a country --- number is assigned & $\square$ \\
+\hline
+9 & OTP & Wait for OTP --- code appears in chat & $\square$ \\
+\hline
+10 & Group & OTP is forwarded to OTP Group & $\square$ \\
+\hline
+\multicolumn{4}{|l|}{\cellcolor{brandLight}\textbf{Admin Panel}} \\
+\hline
+11 & Admin & Send \texttt{/admin} --- see admin panel & $\square$ \\
+\hline
+12 & Stats & Stats show correct numbers & $\square$ \\
+\hline
+13 & Balance & \texttt{/addbal USER\_ID 10} --- balance added & $\square$ \\
+\hline
+\multicolumn{4}{|l|}{\cellcolor{brandLight}\textbf{Stability}} \\
+\hline
+14 & Uptime & Wait 10 minutes --- bot still responds & $\square$ \\
+\hline
+15 & Crash & Send random text --- bot doesn't crash & $\square$ \\
+\hline
+\end{tabularx}
+\end{table}
+
+\section{What to Deliver to the Client}
+
+\begin{table}[H]
+\centering
+\caption{Client Delivery Package}
+\begin{tabularx}{\textwidth}{|c|l|X|}
+\hline
+\textbf{\#} & \textbf{Deliverable} & \textbf{Description} \\
+\hline
+1 & Running Bot & Bot is live and responding on Telegram \\
+\hline
+2 & \texttt{main.pdf} & 38-page technical documentation (6 chapters) \\
+\hline
+3 & \texttt{invoice.pdf} & Professional invoice for the project \\
+\hline
+4 & \texttt{delivery\_guide.pdf} & This guide (for your own reference) \\
+\hline
+5 & Server Access & Server IP + password (VPS) or Railway login (Railway) \\
+\hline
+6 & GitHub Repo & Link to the private GitHub repository \\
+\hline
+7 & Source Code & Full source code on the client's preferred medium \\
+\hline
+\end{tabularx}
+\end{table}
+
+\section{Security Checklist Before Handoff}
+
+\begin{table}[H]
+\centering
+\caption{Security Verification}
+\begin{tabularx}{\textwidth}{|c|X|c|}
+\hline
+\textbf{\#} & \textbf{Security Item} & \textbf{Done?} \\
+\hline
+1 & \texttt{.env} has client's bot token, NOT yours & $\square$ \\
+\hline
+2 & \texttt{ADMIN\_IDS} has client's User ID & $\square$ \\
+\hline
+3 & \texttt{.env} is NOT uploaded to GitHub & $\square$ \\
+\hline
+4 & Your test bot token is revoked (BotFather $\rightarrow$ /revoke) & $\square$ \\
+\hline
+5 & Test database has been deleted (fresh start) & $\square$ \\
+\hline
+6 & GitHub repository is set to Private & $\square$ \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{importantbox}
+\textbf{Revoke your test bot token!} Go to @BotFather on Telegram, send \texttt{/mybots}, select your test bot (\texttt{ActiveDreamTest123\_bot}), click ``API Token'', then ``Revoke current token''. This ensures no one can use your test bot.
+\end{importantbox}
+
+\section{Monthly Costs Summary for the Client}
+
+\begin{table}[H]
+\centering
+\caption{Ongoing Monthly Costs}
+\begin{tabularx}{\textwidth}{|l|c|c|X|}
+\hline
+\textbf{Item} & \textbf{Railway} & \textbf{VPS (Hetzner)} & \textbf{Notes} \\
+\hline
+Server/hosting & \$6--8 & \$3.29 & VPS is cheaper long-term \\
+\hline
+5sim.net balance & \$10--100 & \$10--100 & Depends on usage \\
+\hline
+\textbf{Total} & \textbf{\$16--108} & \textbf{\$13--103} & \\
+\hline
+\textbf{In BDT} & \textbf{1,900--12,800} & \textbf{1,550--12,200} & At 119 BDT/\$ rate \\
+\hline
+\end{tabularx}
+\end{table}
+
+\section{Final Delivery Message to Client}
+
+Send this to your client after everything is working:
+
+\begin{lstlisting}[style=envstyle, title={Final Delivery Message (Bangla)}]
+Assalamu Alaikum,
+
+Active Dream বটটা সফলভাবে ডেপ্লয় করা 
+হয়েছে! ✅
+
+আপনার বটের তথ্য:
+- বট: @ActiveDream_OTP_Bot
+- স্ট্যাটাস: 24/7 চালু আছে
+- অ্যাডমিন: আপনি
+
+আপনি এখন যা করতে পারেন:
+1. /start দিয়ে বট চালু করুন
+2. /admin দিয়ে অ্যাডমিন প্যানেল দেখুন
+3. ইউজারদের approve করুন
+4. Get Number দিয়ে নম্বর কিনুন
+
+ডকুমেন্টেশন PDF ও ইনভয়েস পাঠাচ্ছি।
+
+ধন্যবাদ! 🙏
+\end{lstlisting}
+
+\vspace{1cm}
+
+\begin{center}
+\Large\textbf{--- End of Delivery Guide ---}
+
+\vspace{0.5cm}
+\normalsize
+\textcolor{gray}{Active Dream Bot $\bullet$ Delivery Guide v1.0 $\bullet$ May 2026}
+
+\textcolor{gray}{NHM Development $\bullet$ Nafis Hossain Momen}
+\end{center}

@@ -1,0 +1,214 @@
+% ══════════════════════════════════════════════
+% CHAPTER 4: SETUP — WHAT THE CLIENT MUST DO
+% ══════════════════════════════════════════════
+
+\chapter{Setup Guide --- What You Must Do Before Deployment}
+
+\section{How Far Are We From Deployment?}
+
+\begin{successbox}
+\textbf{Development Status: 100\% Complete.}
+
+All 18 Python source files are written and compile without errors. The bot is fully functional. What remains is \textbf{configuration only} --- providing your specific API keys and Telegram credentials.
+\end{successbox}
+
+Here is the exact checklist of what remains:
+
+\begin{table}[H]
+\centering
+\caption{Deployment Readiness Checklist}
+\begin{tabularx}{\textwidth}{|c|l|c|X|}
+\hline
+\textbf{\#} & \textbf{Task} & \textbf{Status} & \textbf{Time Needed} \\
+\hline
+1 & Bot code development & \ding{51} Done & 0 minutes \\
+\hline
+2 & Database schema & \ding{51} Done & 0 minutes (auto-creates) \\
+\hline
+3 & Create Telegram Bot via BotFather & \ding{55} Pending & 2 minutes \\
+\hline
+4 & Create Telegram OTP Group & \ding{55} Pending & 2 minutes \\
+\hline
+5 & Create Telegram Channel & \ding{55} Pending & 2 minutes \\
+\hline
+6 & Register on 5sim.net & \ding{55} Pending & 5 minutes \\
+\hline
+7 & Fund 5sim.net account & \ding{55} Pending & 10--30 minutes \\
+\hline
+8 & Get your Telegram User ID & \ding{55} Pending & 1 minute \\
+\hline
+9 & Create .env file & \ding{55} Pending & 2 minutes \\
+\hline
+10 & Set up server (VPS) & \ding{55} Pending & 15--30 minutes \\
+\hline
+11 & Deploy and start bot & \ding{55} Pending & 5 minutes \\
+\hline
+\multicolumn{2}{|r|}{\textbf{Total Time Remaining:}} & & \textbf{45--75 minutes} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{infobox}
+You are approximately \textbf{1 hour away} from having a fully operational bot. The majority of that time is account setup and server provisioning --- not coding.
+\end{infobox}
+
+% ──────────────────────────────────────────────
+\section{Step 1: Create the Telegram Bot}
+
+\begin{enumerate}
+    \item Open Telegram and search for \texttt{@BotFather}
+    \item Send \texttt{/newbot}
+    \item BotFather asks: ``\textit{What name do you want for your bot?}''
+    \item Enter: \texttt{Active Dream}
+    \item BotFather asks: ``\textit{Choose a username for your bot}''
+    \item Enter a unique username, e.g.: \texttt{ActiveDreamOTPBot}
+    
+    \begin{warningbox}
+    The username must end with ``bot'' and be unique across all of Telegram. If your chosen name is taken, try variations like \texttt{ActiveDream\_OTP\_Bot} or \texttt{AD\_NumberBot}.
+    \end{warningbox}
+    
+    \item BotFather will respond with your \textbf{Bot Token}. It looks like:
+    
+    \begin{lstlisting}[style=bashstyle]
+    7123456789:AAFx8Kz3mN9bR2wQp1vL7dS5yH0jE4cW6uI
+    \end{lstlisting}
+    
+    \item \textbf{Copy this token} --- you will need it for the \texttt{.env} file
+    
+    \item (Optional) Set bot description and profile picture via BotFather:
+    \begin{itemize}
+        \item \texttt{/setdescription} --- Set what users see before they start the bot
+        \item \texttt{/setabouttext} --- Set the ``About'' section
+        \item \texttt{/setuserpic} --- Upload a profile picture for the bot
+    \end{itemize}
+\end{enumerate}
+
+% ──────────────────────────────────────────────
+\section{Step 2: Get Your Telegram User ID}
+
+Your User ID is needed so the bot knows who the admin is.
+
+\begin{enumerate}
+    \item Open Telegram and search for \texttt{@userinfobot}
+    \item Send \texttt{/start}
+    \item The bot will reply with your user information including your \textbf{numeric User ID}
+    \item It looks like: \texttt{123456789}
+    \item \textbf{Copy this number} --- this is your \texttt{ADMIN\_IDS} value
+\end{enumerate}
+
+\begin{tipbox}
+You can have multiple admins. If you want user 111111111 and 222222222 as admins, set \texttt{ADMIN\_IDS=111111111,222222222} in the .env file.
+\end{tipbox}
+
+% ──────────────────────────────────────────────
+\section{Step 3: Create the OTP Group}
+
+\begin{enumerate}
+    \item In Telegram, create a new group
+    \item Name it: \textbf{Active Dream OTP}
+    \item Add your bot (\texttt{@ActiveDreamOTPBot}) to the group
+    \item Make the bot an \textbf{admin} of the group (so it can send messages)
+    \item Get the group's Chat ID:
+    \begin{enumerate}
+        \item Add \texttt{@RawDataBot} to the group temporarily
+        \item It will display the group info including the \textbf{Chat ID}
+        \item The Chat ID looks like: \texttt{-1001234567890} (it starts with -100)
+        \item \textbf{Copy this ID} --- this is your \texttt{OTP\_GROUP\_ID}
+        \item You can remove @RawDataBot after getting the ID
+    \end{enumerate}
+    \item Create an invite link for the group --- this is your \texttt{OTP\_GROUP\_LINK}
+\end{enumerate}
+
+% ──────────────────────────────────────────────
+\section{Step 4: Create the Update Channel}
+
+\begin{enumerate}
+    \item In Telegram, create a new \textbf{Channel}
+    \item Name it: \textbf{Active Dream Channel}
+    \item Add your bot as an admin of the channel
+    \item Get the channel's public link (e.g., \texttt{https://t.me/ActiveDreamChannel})
+    \item This is your \texttt{CHANNEL\_LINK}
+\end{enumerate}
+
+% ──────────────────────────────────────────────
+\section{Step 5: Register on 5sim.net and Get API Key}
+
+\begin{enumerate}
+    \item Visit \href{https://5sim.net}{https://5sim.net}
+    \item Register with your email
+    \item Verify your email address
+    \item Go to \textbf{Profile} $\rightarrow$ scroll to \textbf{API Key}
+    \item Click \textbf{Generate API Key}
+    \item \textbf{Copy the API key} --- this is your \texttt{FIVESIM\_API\_KEY}
+\end{enumerate}
+
+% ──────────────────────────────────────────────
+\section{Step 6: Fund Your 5sim.net Account}
+
+See Chapter 3, Section 3.4 for detailed funding instructions specific to Bangladesh.
+
+\textbf{Minimum recommended starting balance: \$10 (approximately 1,200 BDT)}
+
+% ──────────────────────────────────────────────
+\section{Step 7: Create the .env Configuration File}
+
+After completing all the steps above, you should have all the values needed. Create the \texttt{.env} file:
+
+\begin{lstlisting}[style=envstyle, title=.env --- Your Configuration File]
+# Telegram Bot Token (from BotFather)
+BOT_TOKEN=7123456789:AAFx8Kz3mN9bR2wQp1vL7dS5yH0jE4cW6uI
+
+# Your Telegram User ID (from @userinfobot)
+ADMIN_IDS=123456789
+
+# 5sim.net API Key (from 5sim.net profile)
+FIVESIM_API_KEY=eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9...
+
+# OTP Group (from @RawDataBot)
+OTP_GROUP_ID=-1001234567890
+OTP_GROUP_LINK=https://t.me/ActiveDreamOTP
+
+# Channel
+CHANNEL_LINK=https://t.me/ActiveDreamChannel
+
+# Bot Name
+BOT_NAME=Active Dream
+
+# OTP Polling Settings (seconds)
+OTP_CHECK_INTERVAL=5
+OTP_MAX_WAIT=300
+\end{lstlisting}
+
+\begin{importantbox}
+\textbf{SECURITY:} The \texttt{.env} file contains your secrets. \textbf{Never share it, never upload it to GitHub, never send it to anyone.} If compromised, someone could:
+\begin{itemize}
+    \item Control your bot
+    \item Spend your 5sim.net balance
+    \item Send messages as your bot
+\end{itemize}
+\end{importantbox}
+
+% ──────────────────────────────────────────────
+\section{Summary of Values You Need}
+
+\begin{table}[H]
+\centering
+\caption{All Required Configuration Values}
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\textbf{Variable} & \textbf{Source} & \textbf{Example} \\
+\hline
+BOT\_TOKEN & @BotFather & \texttt{7123456789:AAFx8K...} \\
+\hline
+ADMIN\_IDS & @userinfobot & \texttt{123456789} \\
+\hline
+FIVESIM\_API\_KEY & 5sim.net Profile & \texttt{eyJhbGci...} \\
+\hline
+OTP\_GROUP\_ID & @RawDataBot & \texttt{-1001234567890} \\
+\hline
+OTP\_GROUP\_LINK & Group invite link & \texttt{https://t.me/ActiveDreamOTP} \\
+\hline
+CHANNEL\_LINK & Channel link & \texttt{https://t.me/ActiveDreamChannel} \\
+\hline
+\end{tabularx}
+\end{table}

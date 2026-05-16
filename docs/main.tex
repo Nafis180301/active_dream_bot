@@ -1,0 +1,205 @@
+\documentclass[12pt, a4paper]{report}
+
+% ──────────────────────────────────────────────
+% PACKAGES
+% ──────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tcolorbox}
+\usepackage{fontawesome5}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{float}
+\usepackage{parskip}
+\usepackage{pifont}
+
+\pgfplotsset{compat=1.18}
+
+% ──────────────────────────────────────────────
+% COLOR DEFINITIONS
+% ──────────────────────────────────────────────
+\definecolor{primaryblue}{HTML}{0088CC}
+\definecolor{darkbg}{HTML}{1B2836}
+\definecolor{successgreen}{HTML}{27AE60}
+\definecolor{warningyellow}{HTML}{F39C12}
+\definecolor{dangerred}{HTML}{E74C3C}
+\definecolor{codebg}{HTML}{F4F4F4}
+\definecolor{codeframe}{HTML}{CCCCCC}
+\definecolor{telegramblue}{HTML}{0088CC}
+\definecolor{sectioncolor}{HTML}{2C3E50}
+\definecolor{linkcolor}{HTML}{2980B9}
+
+% ──────────────────────────────────────────────
+% HYPERREF CONFIG
+% ──────────────────────────────────────────────
+\hypersetup{
+    colorlinks=true,
+    linkcolor=sectioncolor,
+    urlcolor=linkcolor,
+    citecolor=primaryblue,
+    pdftitle={Active Dream Bot — Complete Technical Documentation},
+    pdfauthor={Active Dream Development Team},
+    pdfsubject={Telegram OTP Bot Documentation},
+}
+
+% ──────────────────────────────────────────────
+% LISTINGS CONFIG
+% ──────────────────────────────────────────────
+\lstdefinestyle{pythonstyle}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{successgreen}\itshape,
+    keywordstyle=\color{primaryblue}\bfseries,
+    stringstyle=\color{dangerred},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    rulecolor=\color{codeframe},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    tabsize=4,
+    showstringspaces=false,
+    captionpos=b,
+}
+\lstdefinestyle{bashstyle}{
+    backgroundcolor=\color{darkbg},
+    basicstyle=\ttfamily\small\color{white},
+    breaklines=true,
+    frame=single,
+    rulecolor=\color{gray},
+    numbers=none,
+    tabsize=4,
+    showstringspaces=false,
+}
+\lstdefinestyle{envstyle}{
+    backgroundcolor=\color{codebg},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    rulecolor=\color{codeframe},
+    numbers=none,
+    tabsize=4,
+    showstringspaces=false,
+    commentstyle=\color{successgreen}\itshape,
+    morecomment=[l]{\#},
+}
+\lstset{style=pythonstyle}
+
+% ──────────────────────────────────────────────
+% TCOLORBOX STYLES
+% ──────────────────────────────────────────────
+\tcbuselibrary{skins, breakable}
+
+\newtcolorbox{importantbox}{
+    colback=dangerred!5, colframe=dangerred!80,
+    fonttitle=\bfseries, title={\faExclamationTriangle\ Important},
+    breakable, sharp corners, boxrule=1pt,
+}
+\newtcolorbox{infobox}{
+    colback=primaryblue!5, colframe=primaryblue!80,
+    fonttitle=\bfseries, title={\faInfoCircle\ Information},
+    breakable, sharp corners, boxrule=1pt,
+}
+\newtcolorbox{successbox}{
+    colback=successgreen!5, colframe=successgreen!80,
+    fonttitle=\bfseries, title={\faCheckCircle\ Completed},
+    breakable, sharp corners, boxrule=1pt,
+}
+\newtcolorbox{warningbox}{
+    colback=warningyellow!5, colframe=warningyellow!80,
+    fonttitle=\bfseries, title={\faExclamationCircle\ Warning},
+    breakable, sharp corners, boxrule=1pt,
+}
+\newtcolorbox{tipbox}{
+    colback=successgreen!5, colframe=successgreen!60,
+    fonttitle=\bfseries, title={\faLightbulb\ Pro Tip},
+    breakable, sharp corners, boxrule=1pt,
+}
+
+% ──────────────────────────────────────────────
+% HEADER / FOOTER
+% ──────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{gray}{Active Dream Bot}}
+\fancyhead[R]{\small\textcolor{gray}{Technical Documentation}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ──────────────────────────────────────────────
+% TITLE FORMAT
+% ──────────────────────────────────────────────
+\titleformat{\chapter}[display]
+    {\normalfont\Huge\bfseries\color{sectioncolor}}
+    {\chaptertitlename\ \thechapter}{20pt}{\Huge}
+\titleformat{\section}
+    {\normalfont\Large\bfseries\color{sectioncolor}}
+    {\thesection}{1em}{}
+\titleformat{\subsection}
+    {\normalfont\large\bfseries\color{sectioncolor!80}}
+    {\thesubsection}{1em}{}
+
+% ──────────────────────────────────────────────
+% DOCUMENT
+% ──────────────────────────────────────────────
+\begin{document}
+
+% ── Title Page ───────────────────────────────
+\begin{titlepage}
+\centering
+\vspace*{2cm}
+
+{\Huge\bfseries\textcolor{telegramblue}{Active Dream Bot}\par}
+\vspace{0.5cm}
+{\Large\textcolor{sectioncolor}{Complete Technical Documentation}\par}
+\vspace{0.3cm}
+{\large\textcolor{gray}{Permission-Based Private Telegram OTP \& Virtual Number Bot}\par}
+
+\vspace{2cm}
+
+\begin{tikzpicture}
+    \draw[telegramblue, line width=3pt] (0,0) circle (2.5cm);
+    \node at (0,0) {\Huge\textcolor{telegramblue}{\faPaperPlane}};
+    \node[below] at (0,-3) {\Large\textcolor{sectioncolor}{\textbf{Powered by 5sim.net}}};
+\end{tikzpicture}
+
+\vspace{2cm}
+
+\begin{tabular}{rl}
+    \textbf{Version:} & 1.0.0 \\
+    \textbf{Date:} & May 16, 2026 \\
+    \textbf{Status:} & Development Complete --- Ready for Deployment \\
+    \textbf{Platform:} & Telegram Bot API \\
+    \textbf{Language:} & Python 3.11+ \\
+\end{tabular}
+
+\vfill
+{\small\textcolor{gray}{Confidential --- For Internal Use Only}\par}
+\end{titlepage}
+
+% ── Table of Contents ────────────────────────
+\tableofcontents
+\newpage
+
+% ── Include Chapters ─────────────────────────
+\input{chapter1_overview}
+\input{chapter2_architecture}
+\input{chapter3_5sim}
+\input{chapter4_setup}
+\input{chapter5_deployment}
+\input{chapter6_improvements}
+
+\end{document}

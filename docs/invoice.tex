@@ -1,0 +1,292 @@
+\documentclass[a4paper,11pt]{article}
+
+% ── Packages ────────────────────────────────────────
+\usepackage[margin=1.8cm, top=1.5cm, bottom=1.5cm]{geometry}
+\usepackage{xcolor}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{fontawesome5}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usepackage{hyperref}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage{array}
+\usepackage{calc}
+
+% ── Colors ──────────────────────────────────────────
+\definecolor{brandDark}{HTML}{1A1A2E}
+\definecolor{brandPurple}{HTML}{6C63FF}
+\definecolor{brandLight}{HTML}{E8E6FF}
+\definecolor{textGray}{HTML}{555555}
+\definecolor{borderGray}{HTML}{DDDDDD}
+\definecolor{successGreen}{HTML}{27AE60}
+\definecolor{rowAlt}{HTML}{F8F7FF}
+
+% ── Hyperlinks ──────────────────────────────────────
+\hypersetup{
+    colorlinks=true,
+    linkcolor=brandPurple,
+    urlcolor=brandPurple,
+}
+
+% ── No page numbers ────────────────────────────────
+\pagestyle{empty}
+
+% ── Custom commands ────────────────────────────────
+\newcommand{\invoiceline}{\noindent\textcolor{borderGray}{\rule{\textwidth}{0.5pt}}\vspace{4pt}}
+
+\begin{document}
+
+% ══════════════════════════════════════════════════
+% HEADER
+% ══════════════════════════════════════════════════
+
+\begin{tikzpicture}[remember picture, overlay]
+    \fill[brandDark] (current page.north west) rectangle +(\paperwidth, -3.2cm);
+\end{tikzpicture}
+
+\vspace{-1.5cm}
+
+\noindent
+\begin{minipage}[t]{0.55\textwidth}
+    \vspace{0pt}
+    {\color{white}\fontsize{28}{34}\selectfont\bfseries INVOICE}\\[6pt]
+    {\color{brandLight}\large Software Development Services}
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.4\textwidth}
+    \vspace{0pt}
+    \raggedleft
+    {\color{white}\large\bfseries NHM Development}\\[3pt]
+    {\color{brandLight}\small Nafis Hossain Momen}\\
+    {\color{brandLight}\small Software Developer}
+\end{minipage}
+
+\vspace{1.8cm}
+
+% ══════════════════════════════════════════════════
+% INVOICE META
+% ══════════════════════════════════════════════════
+
+\noindent
+\begin{minipage}[t]{0.48\textwidth}
+    {\small\color{textGray}\bfseries BILL TO}\\[4pt]
+    {\large\bfseries Client}\\[2pt]
+    {\color{textGray} Active Dream Project\\
+    Telegram OTP Bot Commission}
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.48\textwidth}
+    \raggedleft
+    {\small\color{textGray}\bfseries INVOICE DETAILS}\\[4pt]
+    \begin{tabular}{r@{\hspace{8pt}}l}
+        {\color{textGray}Invoice No:} & \textbf{NHM-2026-001} \\[2pt]
+        {\color{textGray}Date:} & \textbf{May 16, 2026} \\[2pt]
+        {\color{textGray}Due Date:} & \textbf{Upon Delivery} \\[2pt]
+        {\color{textGray}Status:} & \textcolor{successGreen}{\textbf{DUE}} \\
+    \end{tabular}
+\end{minipage}
+
+\vspace{0.6cm}
+\invoiceline
+
+% ══════════════════════════════════════════════════
+% PROJECT SUMMARY
+% ══════════════════════════════════════════════════
+
+\vspace{0.2cm}
+\noindent{\color{brandDark}\large\bfseries Project: Active Dream --- Telegram OTP Bot}
+
+\vspace{0.2cm}
+\noindent{\color{textGray}\small
+A fully modular, production-ready private Telegram bot providing virtual phone numbers and automated OTP verification for 13+ services across 20+ countries. Includes admin panel, permission system, balance management, API integration, comprehensive documentation, and deployment support.}
+
+\vspace{0.5cm}
+
+% ══════════════════════════════════════════════════
+% LINE ITEMS TABLE
+% ══════════════════════════════════════════════════
+
+\noindent
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}X c r r@{}}
+\toprule
+\rowcolor{brandDark}
+{\color{white}\bfseries Description} & {\color{white}\bfseries Qty} & {\color{white}\bfseries Rate (BDT)} & {\color{white}\bfseries Amount (BDT)} \\
+\midrule
+
+% Item 1
+\textbf{Telegram Bot Core Development} & 1 & & \\
+{\small\color{textGray} Complete bot architecture: entry point, config loader,
+database layer (SQLite), command routing, polling system.
+19 Python source files with async architecture.} & & & \textbf{5,000} \\[4pt]
+
+\rowcolor{rowAlt}
+% Item 2
+\textbf{Permission \& Access Control System} & 1 & & \\
+\rowcolor{rowAlt}
+{\small\color{textGray} Request Access flow, admin approve/reject notifications,
+role-based decorators (@require\_approved, @require\_admin),
+user status management (pending/approved/rejected/banned).} & & & \textbf{2,500} \\[4pt]
+
+% Item 3
+\textbf{Virtual Number \& OTP System} & 1 & & \\
+{\small\color{textGray} 5sim.net API integration, abstract provider interface,
+background OTP polling (asyncio), auto-refund on timeout,
+service selection (13+ platforms), country selection (20+).} & & & \textbf{3,500} \\[4pt]
+
+\rowcolor{rowAlt}
+% Item 4
+\textbf{Admin Dashboard \& Management Panel} & 1 & & \\
+\rowcolor{rowAlt}
+{\small\color{textGray} /admin command panel, real-time statistics, user management,
+balance system (add/deduct/refund), /broadcast messaging,
+/ban and /unban functionality, transaction logging.} & & & \textbf{2,500} \\[4pt]
+
+% Item 5
+\textbf{Mock Provider for Free Testing} & 1 & & \\
+{\small\color{textGray} Complete mock SMS provider simulating number purchase and
+OTP reception without any API costs. Auto-detection based
+on .env configuration. Enables risk-free testing.} & & & \textbf{1,000} \\[4pt]
+
+\rowcolor{rowAlt}
+% Item 6
+\textbf{Technical Documentation (38-Page PDF)} & 1 & & \\
+\rowcolor{rowAlt}
+{\small\color{textGray} Professional LaTeX documentation: project overview,
+architecture diagrams, file-by-file explanation, database
+schema, 5sim.net analysis, setup guide, deployment guide,
+future improvements roadmap. 6 chapters + master compiler.} & & & \textbf{3,000} \\[4pt]
+
+% Item 7
+\textbf{Deployment Guide \& Support} & 1 & & \\
+{\small\color{textGray} Step-by-step VPS deployment guide, systemd service
+configuration, SSH setup instructions, troubleshooting
+FAQ, delivery checklist. Ongoing deployment assistance.} & & & \textbf{1,500} \\[4pt]
+
+\rowcolor{rowAlt}
+% Item 8
+\textbf{Testing \& Quality Assurance} & 1 & & \\
+\rowcolor{rowAlt}
+{\small\color{textGray} Syntax verification of all 19 files, live bot testing
+on Telegram, flow verification (access request, number
+purchase, OTP reception, admin panel), bug fixes.} & & & \textbf{1,000} \\
+
+\midrule
+\bottomrule
+\end{tabularx}
+
+\vspace{0.4cm}
+
+% ══════════════════════════════════════════════════
+% TOTALS
+% ══════════════════════════════════════════════════
+
+\noindent
+\hfill
+\begin{minipage}{0.45\textwidth}
+\begin{tabularx}{\textwidth}{X r}
+    {\color{textGray}Subtotal:} & \textbf{20,000 BDT} \\[4pt]
+    {\color{textGray}Discount:} & {\color{successGreen}\textbf{-- 0 BDT}} \\[4pt]
+    \midrule
+    \\[-8pt]
+    {\large\bfseries Total Due:} & {\large\color{brandPurple}\bfseries 20,000 BDT} \\[2pt]
+    & {\small\color{textGray}(Approx. \$167 USD)} \\
+\end{tabularx}
+\end{minipage}
+
+\vspace{0.6cm}
+\invoiceline
+
+% ══════════════════════════════════════════════════
+% PAYMENT INFORMATION
+% ══════════════════════════════════════════════════
+
+\vspace{0.2cm}
+\noindent{\color{brandDark}\large\bfseries \faMoneyBill\ Payment Methods}
+
+\vspace{0.3cm}
+
+\noindent
+\begin{minipage}[t]{0.48\textwidth}
+    \colorbox{brandLight}{%
+        \parbox{\dimexpr\linewidth-2\fboxsep}{%
+            \vspace{6pt}
+            {\color{brandPurple}\bfseries \faMobile\ bKash (Personal)}\\[4pt]
+            {\large\bfseries 01756003283}\\[3pt]
+            {\small\color{textGray}Account: Nafis Hossain Momen}\\[2pt]
+            {\small\color{textGray}Type: Send Money / Payment}
+            \vspace{6pt}
+        }%
+    }
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.48\textwidth}
+    \colorbox{brandLight}{%
+        \parbox{\dimexpr\linewidth-2\fboxsep}{%
+            \vspace{6pt}
+            {\color{brandPurple}\bfseries \faUniversity\ Bank Transfer}\\[4pt]
+            {\large\bfseries Islami Bank Bangladesh Ltd.}\\[3pt]
+            {\small\color{textGray}A/C No: 20502266700184205}\\[2pt]
+            {\small\color{textGray}A/C Name: Most. Faiza Akhter Surma}
+            \vspace{6pt}
+        }%
+    }
+\end{minipage}
+
+\vspace{0.6cm}
+\invoiceline
+
+% ══════════════════════════════════════════════════
+% DELIVERABLES SUMMARY
+% ══════════════════════════════════════════════════
+
+\vspace{0.2cm}
+\noindent{\color{brandDark}\large\bfseries \faBoxOpen\ Deliverables Included}
+
+\vspace{0.3cm}
+
+\noindent
+\begin{tabularx}{\textwidth}{@{}c X@{}}
+    \textcolor{successGreen}{\faCheckCircle} & Complete source code (19 Python files, modular architecture) \\[3pt]
+    \textcolor{successGreen}{\faCheckCircle} & Production-ready Telegram bot with async architecture \\[3pt]
+    \textcolor{successGreen}{\faCheckCircle} & 5sim.net API integration + Mock provider for testing \\[3pt]
+    \textcolor{successGreen}{\faCheckCircle} & Admin panel with full user and balance management \\[3pt]
+    \textcolor{successGreen}{\faCheckCircle} & 38-page professional PDF documentation (LaTeX) \\[3pt]
+    \textcolor{successGreen}{\faCheckCircle} & Step-by-step deployment guide with troubleshooting \\[3pt]
+    \textcolor{successGreen}{\faCheckCircle} & VPS deployment support and initial setup assistance \\[3pt]
+    \textcolor{successGreen}{\faCheckCircle} & .env configuration template with full instructions \\
+\end{tabularx}
+
+\vspace{0.5cm}
+\invoiceline
+
+% ══════════════════════════════════════════════════
+% FOOTER / TERMS
+% ══════════════════════════════════════════════════
+
+\vspace{0.2cm}
+\noindent{\color{brandDark}\bfseries Terms \& Conditions}
+
+\vspace{0.2cm}
+\noindent{\small\color{textGray}
+\begin{enumerate}
+    \itemsep2pt
+    \item Payment is due upon delivery and successful demonstration of the bot.
+    \item This invoice covers development, documentation, and initial deployment support.
+    \item Ongoing server costs (VPS: \~400 BDT/month, 5sim.net: variable) are the client's responsibility.
+    \item Minor bug fixes within 7 days of delivery are included at no extra charge.
+    \item Feature additions or major modifications after delivery will be quoted separately.
+    \item Source code ownership transfers to the client upon full payment.
+\end{enumerate}
+}
+
+\vspace{0.4cm}
+
+\begin{center}
+    {\color{textGray}\small Thank you for your business!}\\[4pt]
+    {\color{brandPurple}\bfseries NHM Development} {\color{textGray}|} {\small\color{textGray} Nafis Hossain Momen} {\color{textGray}|} {\small\color{textGray} May 2026}
+\end{center}
+
+\end{document}
