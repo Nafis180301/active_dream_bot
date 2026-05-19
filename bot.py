@@ -34,7 +34,8 @@ from handlers.admin import (
     admin_approve_callback, admin_reject_callback,
     admin_pending_callback, admin_users_callback,
     admin_add_balance_callback, addbal_command,
-    broadcast_command, ban_command, unban_command
+    broadcast_command, ban_command, unban_command,
+    admin_broadcast_callback, admin_ban_callback, admin_unban_callback
 )
 
 # Configure logging
@@ -115,6 +116,9 @@ def main() -> None:
     app.add_handler(CallbackQueryHandler(admin_users_callback, pattern="^admin_users$"))
     app.add_handler(CallbackQueryHandler(admin_add_balance_callback, pattern="^admin_add_balance$"))
     app.add_handler(CallbackQueryHandler(admin_refresh_callback, pattern="^admin_refresh$"))
+    app.add_handler(CallbackQueryHandler(admin_broadcast_callback, pattern="^admin_broadcast$"))
+    app.add_handler(CallbackQueryHandler(admin_ban_callback, pattern="^admin_ban$"))
+    app.add_handler(CallbackQueryHandler(admin_unban_callback, pattern="^admin_unban$"))
 
     # Start polling
     print(f"[BOT] {Config.BOT_NAME} is starting...")

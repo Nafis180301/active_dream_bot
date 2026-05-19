@@ -4,7 +4,7 @@ Approve/reject users, manage balance, broadcast, ban/unban.
 """
 import logging
 from telegram import Update
-from telegram.ext import ContextTypes, ConversationHandler, MessageHandler, filters
+from telegram.ext import ContextTypes
 from database.models import (
     get_user, update_user_status, get_pending_users, get_all_users,
     get_user_count, add_balance, get_approved_users
@@ -17,11 +17,7 @@ from config import Config
 
 logger = logging.getLogger(__name__)
 
-# Conversation states for admin operations
-WAITING_BALANCE_USER_ID, WAITING_BALANCE_AMOUNT = range(2)
-WAITING_BROADCAST_MSG = 2
-WAITING_BAN_USER_ID = 3
-WAITING_UNBAN_USER_ID = 4
+
 
 
 @require_admin
@@ -263,3 +259,45 @@ async def unban_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         return
     await update_user_status(target_id, "approved")
     await update.message.reply_text(f"🔓 User `{target_id}` has been unbanned.", parse_mode="Markdown")
+
+
+@require_admin
+async def admin_broadcast_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Handle 'Broadcast' button in admin panel — show usage instructions."""
+    query = update.callback_query
+    await query.answer()
+    await query.edit_message_text(
+        "📢 *Broadcast Message*\n\n"
+        "Send a broadcast to all approved users using:\n\n"
+        "`/broadcast Your message here`\n\n"
+        "Example:\n`/broadcast 🎉 New features added! Check them out.`",
+        parse_mode="Markdown", reply_markup=admin_panel_keyboard()
+    )
+
+
+@require_admin
+async def admin_ban_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Handle 'Ban User' button in admin panel — show usage instructions."""
+    query = update.callback_query
+    await query.answer()
+    await query.edit_message_text(
+        "🚫 *Ban User*\n\n"
+        "Ban a user by their Telegram ID:\n\n"
+        "`/ban USER_ID`\n\n"
+        "Example:\n`/ban 123456789`",
+        parse_mode="Markdown", reply_markup=admin_panel_keyboard()
+    )
+
+
+@require_admin
+async def admin_unban_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Handle 'Unban User' button in admin panel — show usage instructions."""
+    query = update.callback_query
+    await query.answer()
+    await query.edit_message_text(
+        "🔓 *Unban User*\n\n"
+        "Unban a user by their Telegram ID:\n\n"
+        "`/unban USER_ID`\n\n"
+        "Example:\n`/unban 123456789`",
+        parse_mode="Markdown", reply_markup=admin_panel_keyboard()
+    )

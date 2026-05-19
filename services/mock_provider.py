@@ -80,7 +80,7 @@ class MockProvider(SmsProvider):
             "country": country.title(),
             "flag": flag,
             "service": service,
-            "created": asyncio.get_event_loop().time(),
+            "created": asyncio.get_running_loop().time(),
             "otp_delay": random.randint(8, 20),  # OTP arrives after 8-20 seconds
             "otp_code": str(random.randint(100000, 999999)),  # 6-digit OTP
             "status": "waiting",
@@ -108,7 +108,7 @@ class MockProvider(SmsProvider):
             return SmsResult(received=False, status=order["status"])
 
         # Check if enough time has passed for the OTP to "arrive"
-        elapsed = asyncio.get_event_loop().time() - order["created"]
+        elapsed = asyncio.get_running_loop().time() - order["created"]
 
         if elapsed >= order["otp_delay"]:
             # OTP has "arrived"!
