@@ -28,7 +28,13 @@ class FiveSimProvider(SmsProvider):
             async with aiohttp.ClientSession() as session:
                 async with session.request(method, url, headers=self.headers, **kwargs) as resp:
                     if resp.status == 200:
-                        return await resp.json()
+                        try:
+                            return await resp.json(content_type=None)
+                        except Exception:
+                            # 5sim returns text/plain for errors like "no free phones"
+                            text = await resp.text()
+                            logger.warning(f"5sim returned non-JSON 200: {text}")
+                            return {"error": text}
                     else:
                         text = await resp.text()
                         logger.error(f"5sim API error {resp.status}: {text}")
