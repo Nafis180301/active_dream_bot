@@ -94,7 +94,7 @@ class FiveSimProvider(SmsProvider):
         
         API: GET /user/check/{order_id}
         
-        Status values: PENDING, RECEIVED, CANCELED, TIMEOUT, FINISHED
+        Status values: PENDING, RECEIVED, CANCELED, TIMEOUT, FINISHED, BANNED
         """
         result = await self._request("GET", f"/user/check/{order_id}")
 
@@ -119,10 +119,16 @@ class FiveSimProvider(SmsProvider):
                 full_text=full_text,
                 status="received",
             )
-        elif status in ("CANCELED", "TIMEOUT"):
+        elif status in ("CANCELED", "TIMEOUT", "BANNED"):
+            # Map to status strings that poll_for_otp expects
+            status_map = {
+                "CANCELED": "cancelled",
+                "TIMEOUT": "expired",
+                "BANNED": "cancelled",
+            }
             return SmsResult(
                 received=False,
-                status=status.lower(),
+                status=status_map.get(status, status.lower()),
             )
         elif status == "FINISHED":
             return SmsResult(
